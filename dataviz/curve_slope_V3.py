@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import os
 
+#COMMENT FROM MASON RAGGHGHHH
+
 class Curves:
 
     def __init__(self, data_src_folder_path:str, plot_dst_folder_path:str, plot_color:str = 'black'):
