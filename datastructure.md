@@ -1,11 +1,17 @@
 # # current structure of data/figures folders
 
-# # data
+folder/subfolder structure
+
+# data folder:
+find below the folders within the data folder
+
+
 # jan19testing
 twentyfivepercent
 fiftypercent
 seventyfivepercent
 
 
-# # figures
+# figures
 # jan19testing
+summary
