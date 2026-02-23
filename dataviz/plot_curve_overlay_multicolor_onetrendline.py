@@ -168,7 +168,6 @@ class Curves:
 
     def func(self, x, a):
         return a * x
-# heloo
 
     def plot(self):
         plt.figure(figsize=(10,10))
