@@ -1,0 +1,11 @@
+group1,group2,meandiff,p-adj,lower,upper,reject,effectsize(CohensD)
+0% Kaolinite,100% Kaolinite,-47.3931,0.0,-51.3978,-43.3885,True,9.468309412508283
+0% Kaolinite,25% Kaolinite,-36.8906,0.0,-40.8953,-32.886,True,7.170969876577316
+0% Kaolinite,50% Kaolinite,-42.4119,0.0,-46.4165,-38.4072,True,8.530220733074637
+0% Kaolinite,75% Kaolinite,-49.0256,0.0,-53.0303,-45.021,True,9.352424826723574
+100% Kaolinite,25% Kaolinite,10.5025,0.0,6.4979,14.5071,True,-3.3651400424406086
+100% Kaolinite,50% Kaolinite,4.9812,0.0074,0.9766,8.9859,True,-1.7616305100699077
+100% Kaolinite,75% Kaolinite,-1.6325,0.7851,-5.6371,2.3721,False,0.49781541684399294
+25% Kaolinite,50% Kaolinite,-5.5213,0.0022,-9.5259,-1.5166,True,1.8002313747978964
+25% Kaolinite,75% Kaolinite,-12.135,0.0,-16.1396,-8.1304,True,3.4792701961474894
+50% Kaolinite,75% Kaolinite,-6.6138,0.0002,-10.6184,-2.6091,True,2.0488848191375335
