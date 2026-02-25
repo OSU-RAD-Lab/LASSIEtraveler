@@ -333,11 +333,11 @@ class Curves:
         depth = self.curve_data[i]["depth"]
 
         # trendline plots
-        plt.plot(x_zero, y_zero, label=f'0% slope: {slopesmean_zero:.2f}',color=self.plot_color1,linestyle='-')
+        plt.plot(x_zero, y_zero, label=f'ASTM Jan 30th slope: {slopesmean_zero:.2f}',color=self.plot_color1,linestyle='-')
         plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color=self.plot_color2,linestyle='-')
         plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color=self.plot_color3,linestyle='-')
         plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color=self.plot_color4,linestyle='-')
-        plt.plot(x_onehundred, y_onehundred, label=f'100% slope: {slopesmean_onehundred:.2f}',color=self.plot_color5,linestyle='-')
+        plt.plot(x_onehundred, y_onehundred, label=f'ASTM Feb 23rd slope: {slopesmean_onehundred:.2f}',color=self.plot_color5,linestyle='-')
         
         #Uncertainty cone plots
         plt.plot(x_upper_zero, y_upper_zero, color=self.plot_color1, linestyle='--')
@@ -394,7 +394,7 @@ class Curves:
         #########################################################
 
         # Add title
-        plt.title("Kaolinite Data Force-Depth Curves")
+        plt.title("All Data Force-Depth Curves")
 
         plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
         plt.show()
