@@ -203,8 +203,8 @@ class Curves:
                 self.slopes_0.append(opt_slope[0])
                 slopesmean_zero = np.mean(self.slopes_0)
                 #calculate upper and lower bounds for uncertainty cone using a 5th and 95th percentile of the slopes
-                upper_bound_zero = np.percentile(self.slopes_0, 95)
-                lower_bound_zero = np.percentile(self.slopes_0, 5)
+                upper_bound_zero = slopesmean_zero + np.std(self.slopes_0)
+                lower_bound_zero = slopesmean_zero - np.std(self.slopes_0)
                 #upper_bound_zero = slopesmean_zero + np.std(self.slopes_0)
                 #lower_bound_zero = slopesmean_zero - np.std(self.slopes_0)
 
@@ -226,8 +226,8 @@ class Curves:
                 self.slopes_25.append(opt_slope[0])
                 slopesmean_twentyfive = np.mean(self.slopes_25)
 
-                upper_bound_twentyfive = np.percentile(self.slopes_25, 95)
-                lower_bound_twentyfive = np.percentile(self.slopes_25, 5)
+                upper_bound_twentyfive = slopesmean_twentyfive + np.std(self.slopes_25)
+                lower_bound_twentyfive = slopesmean_twentyfive - np.std(self.slopes_25)
 
                 x_upper_twentyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 y_upper_twentyfive = self.func(x_upper_twentyfive, upper_bound_twentyfive)
@@ -247,8 +247,8 @@ class Curves:
                 self.slopes_50.append(opt_slope[0])
                 slopesmean_fifty = np.mean(self.slopes_50)
 
-                upper_bound_fifty = np.percentile(self.slopes_50, 95)
-                lower_bound_fifty = np.percentile(self.slopes_50, 5)
+                upper_bound_fifty = slopesmean_fifty + np.std(self.slopes_50)
+                lower_bound_fifty = slopesmean_fifty - np.std(self.slopes_50)
 
                 x_upper_fifty = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 y_upper_fifty = self.func(x_upper_fifty, upper_bound_fifty)
@@ -268,8 +268,8 @@ class Curves:
                 self.slopes_75.append(opt_slope[0])
                 slopesmean_seventyfive = np.mean(self.slopes_75)
 
-                upper_bound_seventyfive = np.percentile(self.slopes_75, 95)
-                lower_bound_seventyfive = np.percentile(self.slopes_75, 5)
+                upper_bound_seventyfive = slopesmean_seventyfive + np.std(self.slopes_75)
+                lower_bound_seventyfive = slopesmean_seventyfive - np.std(self.slopes_75)
 
                 x_upper_seventyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 y_upper_seventyfive = self.func(x_upper_seventyfive, upper_bound_seventyfive)
@@ -289,8 +289,8 @@ class Curves:
                 self.slopes_100.append(opt_slope[0])
                 slopesmean_onehundred = np.mean(self.slopes_100)
 
-                upper_bound_onehundred = np.percentile(self.slopes_100, 95)
-                lower_bound_onehundred = np.percentile(self.slopes_100, 5)
+                upper_bound_onehundred = slopesmean_onehundred + np.std(self.slopes_100)
+                lower_bound_onehundred = slopesmean_onehundred - np.std(self.slopes_100)
 
                 x_upper_onehundred = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 y_upper_onehundred = self.func(x_upper_onehundred, upper_bound_onehundred)
@@ -310,8 +310,8 @@ class Curves:
                 self.slopes_other.append(opt_slope[0])
                 slopesmean = np.mean(self.slopes_other)
 
-                upper_bound_other = np.percentile(self.slopes_other, 95)
-                lower_bound_other = np.percentile(self.slopes_other, 5)
+                upper_bound_other = slopesmean + np.std(self.slopes_other)
+                lower_bound_other = slopesmean - np.std(self.slopes_other)
 
                 x_upper_other = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 y_upper_other = self.func(x_upper_other, upper_bound_other)
