@@ -24,12 +24,14 @@ class Curves:
         self.filenames= []
         self.curve_data = []
         self.slopes = []
-        self.slopes_0 = []
-        self.slopes_25 = []
-        self.slopes_50 = []
-        self.slopes_75 = []
-        self.slopes_100 = []
+        self.slopes_SuperSand = []
+        self.slopes_ASTM = []
+        self.slopes_Clay25 = []
+        self.slopes_Clay50 = []
+        self.slopes_Clay75 = []
+        self.slopes_Clay100 = []
         self.slopes_other = []
+        self.plot_data = []
         
     def get_curve_data(self):
         for filename in os.listdir(self.data_src_folder_path):
@@ -184,184 +186,101 @@ class Curves:
         return a * x
 
     def plot(self):
+        """Set up the figure and draw all the category trendlines and cones."""
         plt.figure(figsize=(10,10))
         plt.xlabel('Depth (m)')
         plt.ylabel('Resistance (N)')
-        plt.title('Depth vs Resistance Curve')
         plt.xlim(0, 0.05)
         plt.ylim(-1.75, 3.3)
+
+    def plot_variable(self, x_vals, y_vals, x_upper, y_upper, x_lower, y_lower, label_mean, label_upper, label_lower, color):
+        plt.plot(x_vals, y_vals, label=label_mean,color=color,linestyle='-')
+        plt.plot(x_upper, y_upper, label=label_upper,color=color, linestyle='--')
+        plt.plot(x_lower, y_lower, label=label_lower,color=color, linestyle='--')
+        plt.fill_between(x_vals, y_lower, y_upper, color=color, alpha=0.3)
+
+
+        #resist = self.curve_data[i]["resistance"]
+        #depth = self.curve_data[i]["depth"]
+        #plt.figure(figsize=(10,10))
+        # prepare categories to colour mapping
+
+    def compute_slopes(self):
+        categories = {
+            'SuperSand': self.plot_color1,
+            'ASTM': self.plot_color2,
+            'Clay25': self.plot_color3,
+            'Clay50': self.plot_color4,
+            'Clay75': self.plot_color5,
+            'Clay100': self.plot_color6,
+        }
+
+        slopes = {k: [] for k in  categories.keys()}
+        slopes['other'] = []
+
+        # compute slope for every curve and assign to category
+        for i, df in enumerate(self.curve_data):
+            filename = self.filenames[i]
+            opt_slope, _ = curve_fit(self.func, df['depth'], df['resistance'])
+            slope = opt_slope[0]
+            matched = False
+            for key in categories:
+                if key in filename:
+                    slopes[key].append(slope)
+                    matched = True
+                    break
+            if not matched:
+                slopes['other'].append(slope)
         
+        self.plot_data = []
+        x_vals = np.linspace(0, 0.05, 100)
+        for key, slope_list in slopes.items():
+            if not slope_list:
+                continue
+            mean_slope = np.mean(slope_list)
+            std_slope = np.std(slope_list)
+            upper = mean_slope + std_slope
+            lower = mean_slope - std_slope
+            colour = categories.get(key, 'grey')
+
+            y_mean = self.func(x_vals, mean_slope)
+            y_upper = self.func(x_vals, upper)
+            y_lower = self.func(x_vals, lower)
+ 
+            self.plot_data.append({
+                "x_vals": x_vals,
+                "y_mean": y_mean,
+                "y_upper": y_upper,
+                "y_lower": y_lower,
+                "label_mean": f'{key} mean ({mean_slope:.2f})',
+                "label_upper": f'{key} upper ({upper:.2f})',
+                "label_lower": f'{key} lower ({lower:.2f})',
+                "color": colour
+            })
+
         
-        for i in range(len(self.curve_data)):
-            # if i == 1:
-           
-            if "Clay0" in self.filenames[i]:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,alpha=0.2)
-                
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_0.append(opt_slope[0])
-                slopesmean_zero = np.mean(self.slopes_0)
-                #calculate upper and lower bounds for uncertainty cone using a 5th and 95th percentile of the slopes
-                upper_bound_zero = slopesmean_zero + np.std(self.slopes_0)
-                lower_bound_zero = slopesmean_zero - np.std(self.slopes_0)
-                #upper_bound_zero = slopesmean_zero + np.std(self.slopes_0)
-                #lower_bound_zero = slopesmean_zero - np.std(self.slopes_0)
+    def plot_all(self):
+        self.plot()
 
-                x_upper_zero = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_zero = self.func(x_upper_zero, upper_bound_zero)
-                
-                x_lower_zero = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_zero = self.func(x_lower_zero, lower_bound_zero)
-                # Generate x values
-                x_zero = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_zero = self.func(x_zero, slopesmean_zero)
-                
-            elif "Clay25" in self.filenames[i]:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2,alpha=0.2)
-                
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_25.append(opt_slope[0])
-                slopesmean_twentyfive = np.mean(self.slopes_25)
+        self.compute_slopes()
 
-                upper_bound_twentyfive = slopesmean_twentyfive + np.std(self.slopes_25)
-                lower_bound_twentyfive = slopesmean_twentyfive - np.std(self.slopes_25)
-
-                x_upper_twentyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_twentyfive = self.func(x_upper_twentyfive, upper_bound_twentyfive)
-
-                x_lower_twentyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_twentyfive = self.func(x_lower_twentyfive, lower_bound_twentyfive)
-                # Generate x values
-                x_twentyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_twentyfive = self.func(x_twentyfive, slopesmean_twentyfive)
-                
-            elif "Clay50" in self.filenames[i]:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color3, linewidth=2,alpha=0.2)
-                
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_50.append(opt_slope[0])
-                slopesmean_fifty = np.mean(self.slopes_50)
-
-                upper_bound_fifty = slopesmean_fifty + np.std(self.slopes_50)
-                lower_bound_fifty = slopesmean_fifty - np.std(self.slopes_50)
-
-                x_upper_fifty = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_fifty = self.func(x_upper_fifty, upper_bound_fifty)
-
-                x_lower_fifty = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_fifty = self.func(x_lower_fifty, lower_bound_fifty)
-                # Generate x values
-                x_fifty = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_fifty = self.func(x_fifty, slopesmean_fifty)
-                
-            elif "Clay75" in self.filenames[i]:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color4, linewidth=2,alpha=0.2)
-                
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_75.append(opt_slope[0])
-                slopesmean_seventyfive = np.mean(self.slopes_75)
-
-                upper_bound_seventyfive = slopesmean_seventyfive + np.std(self.slopes_75)
-                lower_bound_seventyfive = slopesmean_seventyfive - np.std(self.slopes_75)
-
-                x_upper_seventyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_seventyfive = self.func(x_upper_seventyfive, upper_bound_seventyfive)
-
-                x_lower_seventyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_seventyfive = self.func(x_lower_seventyfive, lower_bound_seventyfive)
-                # Generate x values
-                x_seventyfive = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_seventyfive = self.func(x_seventyfive, slopesmean_seventyfive)
-                
-            elif "Clay100" in self.filenames[i]:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color5, linewidth=2,alpha=0.2)
-
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_100.append(opt_slope[0])
-                slopesmean_onehundred = np.mean(self.slopes_100)
-
-                upper_bound_onehundred = slopesmean_onehundred + np.std(self.slopes_100)
-                lower_bound_onehundred = slopesmean_onehundred - np.std(self.slopes_100)
-
-                x_upper_onehundred = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_onehundred = self.func(x_upper_onehundred, upper_bound_onehundred)
-
-                x_lower_onehundred = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_onehundred = self.func(x_lower_onehundred, lower_bound_onehundred)
-                # Generate x values
-                x_onehundred = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_onehundred = self.func(x_onehundred, slopesmean_onehundred)
-              
-            else:
-                #plot raw data
-                #plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color6, linewidth=2,alpha=0.2)
-                
-                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_other.append(opt_slope[0])
-                slopesmean = np.mean(self.slopes_other)
-
-                upper_bound_other = slopesmean + np.std(self.slopes_other)
-                lower_bound_other = slopesmean - np.std(self.slopes_other)
-
-                x_upper_other = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_upper_other = self.func(x_upper_other, upper_bound_other)
-
-                x_lower_other = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                y_lower_other = self.func(x_lower_other, lower_bound_other)
-                # Plot uncertainty cones
-                # plt.plot(x_upper_other, y_upper_other, color='purple', linestyle='-', alpha=0.5)
-                # plt.plot(x_lower_other, y_lower_other, color='purple', linestyle='-', alpha=0.5)
-                # shade area between upper and lower bounds
-                # plt.fill_between(x_other, y_lower_other, y_upper_other, color='purple', alpha=0.1)
-                # Generate x values
-                x_else = np.linspace(0, 0.05, 100)  # from 0 to max depth
-                # Compute y values using y = mx + b where m is the slope and b is 0
-                y_else = self.func(x_else, slopesmean)
-                #plt.plot(x_else, y_else, label=f'slope: {slopesmean:.2f}',color='purple',linestyle='--')
-        
-        resist = self.curve_data[i]["resistance"]
-        depth = self.curve_data[i]["depth"]
-
-        # trendline plots
-        plt.plot(x_zero, y_zero, label=f'ASTM Jan 30th slope: {slopesmean_zero:.2f}',color=self.plot_color1,linestyle='-')
-        plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color=self.plot_color2,linestyle='-')
-        plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color=self.plot_color3,linestyle='-')
-        plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color=self.plot_color4,linestyle='-')
-        plt.plot(x_onehundred, y_onehundred, label=f'ASTM Feb 23rd slope: {slopesmean_onehundred:.2f}',color=self.plot_color5,linestyle='-')
-        
-        #Uncertainty cone plots
-        plt.plot(x_upper_zero, y_upper_zero, color=self.plot_color1, linestyle='--')
-        plt.plot(x_lower_zero, y_lower_zero, color=self.plot_color1, linestyle='--')
-        # shade area between upper and lower bounds
-        plt.fill_between(x_zero, y_lower_zero, y_upper_zero, color=self.plot_color1, alpha=0.3)
-        #repeat
-        plt.plot(x_upper_twentyfive, y_upper_twentyfive, color=self.plot_color2, linestyle='--' )
-        plt.plot(x_lower_twentyfive, y_lower_twentyfive, color=self.plot_color2, linestyle='--')
-        plt.fill_between(x_twentyfive, y_lower_twentyfive, y_upper_twentyfive, color=self.plot_color2, alpha=0.3)
-        plt.plot(x_upper_fifty, y_upper_fifty, color=self.plot_color3, linestyle='--')
-        plt.plot(x_lower_fifty, y_lower_fifty, color=self.plot_color3, linestyle='--')
-        plt.fill_between(x_fifty, y_lower_fifty, y_upper_fifty, color=self.plot_color3, alpha=0.3)
-        plt.plot(x_upper_seventyfive, y_upper_seventyfive, color=self.plot_color4, linestyle='--')
-        plt.plot(x_lower_seventyfive, y_lower_seventyfive, color=self.plot_color4, linestyle='--')
-        plt.fill_between(x_seventyfive, y_lower_seventyfive, y_upper_seventyfive, color=self.plot_color4, alpha=0.3)
-        plt.plot(x_upper_onehundred, y_upper_onehundred, color=self.plot_color5, linestyle='--')
-        plt.plot(x_lower_onehundred, y_lower_onehundred, color=self.plot_color5, linestyle='--')
-        plt.fill_between(x_onehundred, y_lower_onehundred, y_upper_onehundred, color=self.plot_color5, alpha=0.3)
-
-            #opt_slope, _ = curve_fit(self.func, depth, resist)
-           # print(i)
-            #print(self.slopes)
-            #self.slopes.append(opt_slope[0])
+        for item in self.plot_data:
+            self.plot_variable(
+                item["x_vals"],
+                item["y_mean"],
+                item["x_vals"],   # upper uses same x
+                item["y_upper"],
+                item["x_vals"],   # lower uses same x
+                item["y_lower"],
+                item["label_mean"],
+                item["label_upper"],
+                item["label_lower"],
+                item["color"]
+            )
+        plt.title("All Clay Data Force-Depth Curves")
+        plt.legend()        
+        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
+        plt.show()
 
 
         #ADD TRENDLINE #un-hashed everything inbetween hashed lines
@@ -374,7 +293,7 @@ class Curves:
        
         # plt.plot(depth, self.func(depth, slopesmean), 'r--', label=f"slope: {round(opt_slope[0], 2)}")
  
-        plt.legend()
+    #plt.legend()
         ######################################################
 
         # Define slope (m) and intercept (b)
@@ -392,14 +311,6 @@ class Curves:
         #plt.plot(x, y, label=f'slope: {m}',color='red',linestyle='--')
         #plt.legend(loc='upper left')
         #########################################################
-
-        # Add title
-        plt.title("All Data Force-Depth Curves")
-
-        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
-        plt.show()
-
-    #self.slopes = []
 
 
 def main():
@@ -419,12 +330,14 @@ def main():
     # curves.flip_over_x_axis() # this is needed depending on how data is formatted
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
-    # curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
+    curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
     curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.interpolate(500)
 
     # plot the data
-    curves.plot()
+    curves.plot_all()
+    
+
 
 
 if __name__ == "__main__":

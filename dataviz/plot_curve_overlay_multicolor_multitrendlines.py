@@ -11,7 +11,7 @@ import os
 
 class Curves:
 
-    def __init__(self, data_src_folder_path:str, plot_dst_folder_path:str, plot_color1:str = 'grey', plot_color2:str = 'grey', plot_color3:str = 'grey', plot_color4:str = 'grey', plot_color5:str = 'grey', plot_color6:str = 'grey'):
+    def __init__(self, data_src_folder_path:str, plot_dst_folder_path:str, plot_color1:str = 'grey', plot_color2:str = 'grey', plot_color3:str = 'grey', plot_color4:str = 'grey', plot_color5:str = 'grey', plot_color6:str = 'grey', plot_color7:str = 'grey'):
         self.data_src_folder_path = data_src_folder_path
         self.plot_dst_folder_path = plot_dst_folder_path
         self.plot_color1 = plot_color1
@@ -20,10 +20,12 @@ class Curves:
         self.plot_color4 = plot_color4
         self.plot_color5 = plot_color5
         self.plot_color6 = plot_color6
+        self.plot_color7 = plot_color7
         self.filenames= []
         self.curve_data = []
         self.slopes = []
-        self.slopes_0 = []
+        self.slopes_supersand = []
+        self.slopes_astm = []
         self.slopes_25 = []
         self.slopes_50 = []
         self.slopes_75 = []
@@ -192,21 +194,33 @@ class Curves:
         
         for i in range(len(self.curve_data)):
             # if i == 1:
-           
-            if "Clay0" in self.filenames[i]:
+
+            if "SuperSand" in self.filenames[i]:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
-                self.slopes_0.append(opt_slope[0])
-                slopesmean_zero = np.mean(self.slopes_0)
+                self.slopes_supersand.append(opt_slope[0])
+                slopesmean_supersand = np.mean(self.slopes_supersand)
                 # Generate x values
-                x_zero = np.linspace(0, 0.05, 100)  # from 0 to max depth
+                x_supersand = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 
                  #Compute y values using y = mx + b where m is the slope and b is 0
-                y_zero = self.func(x_zero, slopesmean_zero)
-                #plt.plot(x_zero, y_zero, label=f'slope: {slopesmean_zero:.2f}',color='red',linestyle='--')
+                y_supersand = self.func(x_supersand, slopesmean_supersand)
+                #plt.plot(x_supersand, y_supersand, label=f'slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
+
+            elif "ASTM" in self.filenames[i]:
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
+                opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
+                self.slopes_astm.append(opt_slope[0])
+                slopesmean_astm = np.mean(self.slopes_astm)
+                # Generate x values
+                x_astm = np.linspace(0, 0.05, 100)  # from 0 to max depth
+                
+                 #Compute y values using y = mx + b where m is the slope and b is 0
+                y_astm = self.func(x_astm, slopesmean_astm)
+                #plt.plot(x_astm, y_astm, label=f'slope: {slopesmean_astm:.2f}',color='red',linestyle='--')
                 
             elif "Clay25" in self.filenames[i]:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color3, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_25.append(opt_slope[0])
                 slopesmean_twentyfive = np.mean(self.slopes_25)
@@ -217,7 +231,7 @@ class Curves:
                 #plt.plot(x_twentyfive, y_twentyfive, label=f'slope: {slopesmean_twentyfive:.2f}',color='orange',linestyle='--')
                 
             elif "Clay50" in self.filenames[i]:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color3, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color4, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_50.append(opt_slope[0])
                 slopesmean_fifty = np.mean(self.slopes_50)
@@ -228,7 +242,7 @@ class Curves:
                 #plt.plot(x_fifty, y_fifty, label=f'slope: {slopesmean_fifty:.2f}',color='yellow',linestyle='--')
                 
             elif "Clay75" in self.filenames[i]:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color4, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color5, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_75.append(opt_slope[0])
                 slopesmean_seventyfive = np.mean(self.slopes_75)
@@ -239,7 +253,7 @@ class Curves:
                 #plt.plot(x_seventyfive, y_seventyfive, label=f'slope: {slopesmean_seventyfive:.2f}',color='green',linestyle='--')
                 
             elif "Clay100" in self.filenames[i]:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color5, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color6, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_100.append(opt_slope[0])
                 slopesmean_onehundred = np.mean(self.slopes_100)
@@ -250,25 +264,26 @@ class Curves:
                 #plt.plot(x_onehundred, y_onehundred, label=f'slope: {slopesmean_onehundred:.2f}',color='blue',linestyle='--')
               
             else:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color6, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color7, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_other.append(opt_slope[0])
-                slopesmean = np.mean(self.slopes_other)
+                slopesmean_other = np.mean(self.slopes_other)
                 # Generate x values
                 x_else = np.linspace(0, 0.05, 100)  # from 0 to max depth
                 # Compute y values using y = mx + b where m is the slope and b is 0
-                y_else = self.func(x_else, slopesmean)
-                #plt.plot(x_else, y_else, label=f'slope: {slopesmean:.2f}',color='purple',linestyle='--')
-                plt.plot(x_else, y_else, label=f'slope: {slopesmean:.2f}',color='purple',linestyle='--')
+                y_else = self.func(x_else, slopesmean_other)
+                #plt.plot(x_else, y_else, label=f'slope: {slopesmean_other:.2f}',color='purple',linestyle='--')
+                #plt.plot(x_else, y_else, label=f'slope: {slopesmean_other:.2f}',color='purple',linestyle='--')
         
             resist = self.curve_data[i]["resistance"]
             depth = self.curve_data[i]["depth"]
 
-        plt.plot(x_zero, y_zero, label=f'0% slope: {slopesmean_zero:.2f}',color='red',linestyle='--')
-        plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='orange',linestyle='--')
-        plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color='green',linestyle='--')
-        plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color='aqua',linestyle='--')
-        plt.plot(x_onehundred, y_onehundred, label=f'100% slope: {slopesmean_onehundred:.2f}',color='blue',linestyle='--')
+        plt.plot(x_supersand, y_supersand, label=f'Super Sand slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
+        #plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
+        #plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
+        #plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color='aqua',linestyle='--')
+        #plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color='blue',linestyle='--')
+        #plt.plot(x_onehundred, y_onehundred, label=f'100% slope: {slopesmean_onehundred:.2f}',color='purple',linestyle='--')
         
 
             #opt_slope, _ = curve_fit(self.func, depth, resist)
@@ -316,13 +331,13 @@ class Curves:
 
 
 def main():
-    if len(sys.argv) != 9:
+    if len(sys.argv) != 10:
         print(f'incorrect number of arguments given')
-        print('\tpython3 plot_curve_overlay.py data_src_folder_path plot_dst_folder_path color1 color2 color3 color4 color5 color6')
+        print('\tpython3 plot_curve_overlay.py data_src_folder_path plot_dst_folder_path color1 color2 color3 color4 color5 color6 color7')
         sys.exit()
 
     # Create the data object
-    curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
+    curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
     
     # load the data in 
     curves.get_curve_data()

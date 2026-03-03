@@ -5,7 +5,7 @@ With Trendline:
 python ./dataviz/plot_curve_overlay_multicolor_trendlines.py ./data/fiftyclaydata ./figure_archive/forcedepthviz/fifty blue red
 
 Multicolored Trendlines:
-python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/AllTwentyFiveClayData ./figure_archive/forcedepthviz/twentyfive mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/SuperSandThirdTrial ./figure_archive/forcedepthviz/supersand mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
 
 Multicolored Trendlines w/ Uncertainty Cones:
-python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/AllTwentyFiveClayData ./figure_archive/forcedepthviz/twentyfive r orange g aqua b purple
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/AllUpdatedData ./figure_archive/forcedepthviz/alldata r orange g aqua b purple
