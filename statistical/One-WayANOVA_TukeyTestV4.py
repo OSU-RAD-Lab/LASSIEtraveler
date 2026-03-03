@@ -172,26 +172,65 @@ def perform_Tukey(df,alp):
 
     #create visualizations for additional analysis
     #create dual axis plot to mount boxplot and swarmplot next to eachother
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 7))
+    
+    #DUAL PLOTS
+    ########################
+    #fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 7))
 
     #creates boxplots of response values by condition
-    sns.boxplot(data=df, x="Group", y="Value", hue = "Group", ax=axes[0]) 
-    axes[0].set_ylabel("Strength (N/m)")
-    axes[0].set_xlabel("Condition")  
-    axes[0].set_title("Soil Stength by Condition (box plot)") 
-    axes[0].grid(True, which='both', axis='y', linestyle='-', linewidth=0.5)
+    #sns.boxplot(data=df, x="Group", y="Value", hue = "Group", ax=axes[0]) 
+    #axes[0].set_ylabel("Strength (N/m)")
+    #axes[0].set_xlabel("Condition")  
+    #axes[0].set_title("Soil Stength by Condition (box plot)") 
+    #axes[0].grid(True, which='both', axis='y', linestyle='-', linewidth=0.5)
 
     #creates swarm plot of response values by condition
-    sns.swarmplot(data=df, x="Group", y="Value", hue = "Group", ax=axes[1]) 
-    axes[1].set_ylabel("Strength (N/m)")
-    axes[1].set_xlabel("Condition")  
-    axes[1].set_title("Soil Stength by Condition (swarm chart)")
-    axes[1].grid(True, which='both', axis='y', linestyle='-', linewidth=0.5)
+    #sns.swarmplot(data=df, x="Group", y="Value", hue = "Group", ax=axes[1]) 
+    #axes[1].set_ylabel("Strength (N/m)")
+    #axes[1].set_xlabel("Condition")  
+    #axes[1].set_title("Soil Stength by Condition (swarm chart)")
+    #axes[1].grid(True, which='both', axis='y', linestyle='-', linewidth=0.5)
     
     #display plots
+    #plt.tight_layout()
+    #plt.show()
+    #####################
+
+
+    #OVERLAYED PLOTS
+    # create figure and single axis
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # create boxplot
+    sns.boxplot(data=df, x="Group", y="Value", hue="Group", ax=ax, dodge=False, showcaps=True, boxprops={'zorder': 1, 'alpha':0.6})
+
+    # overlay swarmplot (with translucency)
+    sns.swarmplot(
+        data=df, 
+        x="Group", 
+        y="Value", 
+        hue="Group", 
+        dodge=False, 
+        ax=ax, 
+        alpha=0.6,    # transparency
+        zorder=2      # ensure it sits above boxplot
+    )
+
+    # clean up duplicate legends from overlapping hue layers
+    handles, labels = ax.get_legend_handles_labels()
+    #ax.legend(handles[:len(set(df["Group"]))], labels[:len(set(df["Group"]))], title="Group")
+
+    # axis labels and title
+    ax.set_ylabel("Strength (N/m)")
+    ax.set_xlabel("Condition")
+    ax.set_title("Soil Strength by Condition (Box + Swarm Overlay)")
+
+    # grid and layout
+    ax.grid(True, which='both', axis='y', linestyle='-', linewidth=0.5)
     plt.tight_layout()
     plt.show()
 
+    
     #create and show a confidence interval plot
     Tukey_results.plot_simultaneous(figsize=(10,2.5))
     plt.grid(True, which='both', axis='x', linestyle='-', linewidth=0.5)
