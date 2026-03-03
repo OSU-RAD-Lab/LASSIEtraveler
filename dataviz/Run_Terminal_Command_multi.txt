@@ -1,11 +1,11 @@
 Input for windows powershell terminal:
-python ./MultiLinePlotter/plot_curve_overlay_multicolor.py ./MultiLinePlotter/MultiData/onehundredclaydatatwo ./MultiLinePlotter/MultiFigures/ASTMfigures blue red
+python ./dataviz/plot_curve_overlay_multicolor.py ./data/onehundredclaydatatwo ./figure_archive/forcedepthviz/astm blue red
 
 With Trendline:
-python ./MultiLinePlotter/plot_curve_overlay_multicolor_trendlines.py ./MultiLinePlotter/MultiData/fiftyclaydata ./MultiLinePlotter/MultiFiguresTrendline/fiftyclayfigures blue red
+python ./dataviz/plot_curve_overlay_multicolor_trendlines.py ./data/fiftyclaydata ./figure_archive/forcedepthviz/fifty blue red
 
 Multicolored Trendlines:
-python ./MultiLinePlotter/plot_curve_overlay_multicolor_multitrendlines.py ./MultiLinePlotter/MultiData/allzeroclaydata ./MultiLinePlotter/MultiFiguresTrendline/zeroclayfigures mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/AllTwentyFiveClayData ./figure_archive/forcedepthviz/twentyfive mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle
 
 Multicolored Trendlines w/ Uncertainty Cones:
-python ./MultiLinePlotter/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./MultiLinePlotter/MultiData/FirstTrialAllData ./MultiLinePlotter/MultiFiguresTrendline/FirstTrialFigures r orange g aqua b purple
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/AllTwentyFiveClayData ./figure_archive/forcedepthviz/twentyfive r orange g aqua b purple
