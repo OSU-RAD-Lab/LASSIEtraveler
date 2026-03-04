@@ -1,4 +1,5 @@
 
+from datetime import date
 from fileinput import filename
 from fileinput import filename
 import pandas as pd
@@ -7,7 +8,6 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import os
-
 
 class Curves:
 
@@ -195,7 +195,7 @@ class Curves:
         for i in range(len(self.curve_data)):
             # if i == 1:
 
-            if "SuperSand" in self.filenames[i]:
+            if "Clay0" in self.filenames[i]:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 self.slopes_supersand.append(opt_slope[0])
@@ -279,8 +279,8 @@ class Curves:
             depth = self.curve_data[i]["depth"]
 
         plt.plot(x_supersand, y_supersand, label=f'Super Sand slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
-        #plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
-        #plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
+        plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
+        plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
         #plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color='aqua',linestyle='--')
         #plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color='blue',linestyle='--')
         #plt.plot(x_onehundred, y_onehundred, label=f'100% slope: {slopesmean_onehundred:.2f}',color='purple',linestyle='--')
@@ -324,7 +324,7 @@ class Curves:
         # Add title
         plt.title("Kaolinite Data Force-Depth Curves with Trendlines")
 
-        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves_trendlines')
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_multitrendlines')
         plt.show()
 
     #self.slopes = []

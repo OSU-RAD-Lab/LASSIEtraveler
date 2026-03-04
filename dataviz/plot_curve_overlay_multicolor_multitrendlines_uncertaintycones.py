@@ -1,4 +1,5 @@
 
+from datetime import date
 from fileinput import filename
 from fileinput import filename
 from turtle import color
@@ -207,7 +208,7 @@ class Curves:
 
     def compute_slopes(self):
         categories = {
-            'SuperSand': self.plot_color1,
+            'Clay0': self.plot_color1,
             'ASTM': self.plot_color2,
             'Clay25': self.plot_color3,
             'Clay50': self.plot_color4,
@@ -279,7 +280,7 @@ class Curves:
             )
         plt.title("All Clay Data Force-Depth Curves")
         plt.legend()        
-        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_uncertaintycones_multitrendlines')
         plt.show()
 
 
@@ -330,7 +331,7 @@ def main():
     # curves.flip_over_x_axis() # this is needed depending on how data is formatted
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
-    curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
+    #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
     curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.interpolate(500)
 

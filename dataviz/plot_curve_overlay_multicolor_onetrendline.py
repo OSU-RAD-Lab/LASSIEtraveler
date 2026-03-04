@@ -1,4 +1,6 @@
 
+from datetime import date
+
 import pandas as pd
 import numpy as np
 import sys
@@ -227,7 +229,7 @@ class Curves:
         # Add title
         plt.title("All Clay Data Force-Depth Curves") #I changed the title but again no change
 
-        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()
 
         self.slopes = []

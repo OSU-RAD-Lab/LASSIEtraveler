@@ -1,4 +1,4 @@
-
+from datetime import date
 import pandas as pd
 import numpy as np
 import sys
@@ -169,7 +169,8 @@ class Curves:
             	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
             else:
             	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
-        plt.savefig(f'{self.plot_dst_folder_path}/overlayed_curves')
+
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_curve_overlay_multicolor')
         plt.show()
 
 def main():
