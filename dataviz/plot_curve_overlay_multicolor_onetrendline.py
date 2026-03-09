@@ -183,7 +183,7 @@ class Curves:
             # if i == 1:
             
 
-            if "Clay" in self.filenames[i]: #changed "ASTM" to "Clay"
+            if "ASTM" in self.filenames[i]: #changed "ASTM" to "Clay"
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
             else:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
@@ -227,7 +227,7 @@ class Curves:
         #########################################################
 
         # Add title
-        plt.title("All Clay Data Force-Depth Curves") #I changed the title but again no change
+        plt.title("All ASTM Data Force-Depth Curves") #I changed the title but again no change
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()

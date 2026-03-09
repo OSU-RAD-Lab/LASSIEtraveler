@@ -1,5 +1,4 @@
 
-from datetime import date
 
 import pandas as pd
 import numpy as np
@@ -89,9 +88,10 @@ class Curves:
 
             plt.plot(depth, resist, c=self.plot_color, linewidth=2)
             opt_slope, _ = curve_fit(self.func, depth, resist)
+            print(f"slope: {opt_slope[0]}")
             plt.plot(depth, self.func(depth, opt_slope), 'r--', label=f"slope: {round(opt_slope[0], 2)}")
             plt.legend()
-            save_path = f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}/{self.filenames[i]}.png'
+            save_path = f'{self.plot_dst_folder_path}/{self.filenames[i]}.png'
             print(f'save path: {save_path}')
             plt.savefig(save_path)
             # plt.show()
