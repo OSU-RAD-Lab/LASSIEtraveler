@@ -146,6 +146,7 @@ class Curves:
 
         return ground_start_idx
 
+
     def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
         cleaned_df_list = []
         for idx, df in enumerate(self.curve_data):
@@ -183,7 +184,11 @@ class Curves:
             # if i == 1:
             
 
+<<<<<<< Updated upstream
             if "Clay" in self.filenames[i]: #changed "ASTM" to "Clay"
+=======
+            if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
+>>>>>>> Stashed changes
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
             else:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
@@ -227,7 +232,11 @@ class Curves:
         #########################################################
 
         # Add title
+<<<<<<< Updated upstream
         plt.title("All Clay Data Force-Depth Curves") #I changed the title but again no change
+=======
+        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
+>>>>>>> Stashed changes
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()
@@ -252,7 +261,7 @@ def main():
     # curves.flip_over_x_axis() # this is needed depending on how data is formatted
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
-    # curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
+    #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
     curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.interpolate(500)
 

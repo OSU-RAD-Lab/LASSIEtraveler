@@ -64,14 +64,14 @@ class Curves:
             df.loc[:,'depth'] = df['depth'] - df['depth'].min()
         self.curve_data = cleaned_list
 
-    # def interpolate(self, num_points):
-    #     interp_df_list = []
-    #     for df in self.curve_data:
-    #         x_intervals = np.linspace(0, df['depth'].max(), num_points, endpoint=True) # 100 points between 0 and trunc_level
-    #         y_new = np.interp(x_intervals, df["depth"], df["resistance"])
-    #         new_df = pd.DataFrame({'depth': x_intervals, 'resistance': y_new})
-    #         interp_df_list.append(new_df)
-    #     self.curve_data = interp_df_list
+    def interpolate(self, num_points):
+        interp_df_list = []
+        for df in self.curve_data:
+            x_intervals = np.linspace(0, df['depth'].max(), num_points, endpoint=True) # 100 points between 0 and trunc_level
+            y_new = np.interp(x_intervals, df["depth"], df["resistance"])
+            new_df = pd.DataFrame({'depth': x_intervals, 'resistance': y_new})
+            interp_df_list.append(new_df)
+        self.curve_data = interp_df_list
 
 
     def func(self, x, a):
@@ -83,6 +83,9 @@ class Curves:
             plt.xlabel('Depth (m)')
             plt.ylabel('Resistance (N)')
             plt.title(self.filenames[i], fontsize=8)
+            plt.xlim(0, 0.05)
+            plt.ylim(-1.75, 3.3)
+        
 
             resist = self.curve_data[i]["resistance"]
             depth = self.curve_data[i]["depth"]
@@ -94,7 +97,7 @@ class Curves:
             save_path = f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}/{self.filenames[i]}.png'
             print(f'save path: {save_path}')
             plt.savefig(save_path)
-            # plt.show()
+            #plt.show()
 
 def main():
     if len(sys.argv) != 4:
@@ -136,7 +139,7 @@ def main():
                 'slope': slope_value
             })
     
-    # curves.interpolate(500)
+    curves.interpolate(500)
 
     # plot the data
     curves.plot()
