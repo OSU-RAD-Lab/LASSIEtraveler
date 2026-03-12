@@ -200,8 +200,11 @@ class Curves:
             # if i == 1:
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             if "Clay0" in self.filenames[i]:
 =======
+=======
+>>>>>>> Stashed changes
             if "SuperSand" in self.filenames[i]:
                 print("in clay0")
 >>>>>>> Stashed changes
@@ -290,9 +293,12 @@ class Curves:
 
         plt.plot(x_supersand, y_supersand, label=f'Super Sand slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
         plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
 =======
+=======
+>>>>>>> Stashed changes
         #plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
         #plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
 >>>>>>> Stashed changes
@@ -368,6 +374,9 @@ def main():
 =======
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
     curves.remove_data_prior_first_ground_contact()
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     curves.interpolate(500)
 

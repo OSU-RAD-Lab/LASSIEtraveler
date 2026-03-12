@@ -1,5 +1,6 @@
 Input for windows powershell terminal:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 python ./dataviz/plot_curve_overlay_multicolor.py ./data/onehundredclaydatatwo ./figure_archive/forcedepthviz/astm blue red
 
 With Trendline:
@@ -17,6 +18,19 @@ With Trendline:
 python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/SuperSandSecondTrial ./figures/forcedepthviz/supersand blue red
 >>>>>>> Stashed changes
 
+=======
+python ./dataviz/plot_curve_overlay_multicolor.py ./data/ASTMThirdTrialExtracted ./figure_archive/forcedepthviz/astm blue red
+
+-- Input for windows powershell terminal:
+python ./dataviz/curve_slope_V3.py ./data/ ./figures/forcedepthviz/astm blue
+
+Multi:
+python ./MultiLinePlotter/curve_slope_multi.py ./MultiData/FirstTrialAllData ./MultiFiguresTrendline/FirstTrialFigures blue
+
+With Trendline:
+python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/SuperSandSecondTrial ./figures/forcedepthviz/supersand blue red
+
+>>>>>>> Stashed changes
 -- Multicolored Trendlines:
 python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/OG_SuperSand ./figures/forcedepthviz/supersand mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
 

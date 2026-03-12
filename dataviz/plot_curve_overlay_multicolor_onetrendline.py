@@ -185,7 +185,11 @@ class Curves:
             
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             if "Clay" in self.filenames[i]: #changed "ASTM" to "Clay"
+=======
+            if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
+>>>>>>> Stashed changes
 =======
             if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
 >>>>>>> Stashed changes
@@ -233,7 +237,11 @@ class Curves:
 
         # Add title
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         plt.title("All Clay Data Force-Depth Curves") #I changed the title but again no change
+=======
+        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
+>>>>>>> Stashed changes
 =======
         plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
 >>>>>>> Stashed changes
