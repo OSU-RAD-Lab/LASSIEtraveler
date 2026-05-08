@@ -165,13 +165,17 @@ class Curves:
         for i in range(len(self.curve_data)):
             # if i == 1:
             
-            if "ASTM" in self.filenames[i]: 
-            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
+            if "Apr27" in self.filenames[i]: 
+            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'5%', alpha=.1)
+            elif "Apr29" in self.filenames[i]: 
+            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'7.5%', alpha=.1)
             else:
-            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
+            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2,label=f'2.5%', alpha=.1)
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_curve_overlay_multicolor')
+        plt.legend()
         plt.show()
+        
 
 def main():
     if len(sys.argv) != 5:
@@ -190,12 +194,13 @@ def main():
     # curves.flip_over_x_axis() # this is needed depending on how data is formatted
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
-    curves.make_resistance_min_equal_zero()
+    #curves.make_resistance_min_equal_zero()
     curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.interpolate(500)
 
     # plot the data
     curves.plot()
+    
 
 
 if __name__ == "__main__":

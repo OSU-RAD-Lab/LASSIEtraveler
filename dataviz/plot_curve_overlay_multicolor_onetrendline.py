@@ -19,10 +19,14 @@ class Curves:
         self.filenames= []
         self.curve_data = []
         self.slopes = []
+        self.ground_height = []
 
     def get_curve_data(self):
         for filename in os.listdir(self.data_src_folder_path):
-            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}", skiprows=2)
+            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}")
+            self.ground_height.append(float(df['ground_height'].loc[0]) * 1/100)
+
+            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}", skiprows=2) #added this in
             df = df[['toeforce_y', 'toe_position_y']] # takes just the two important columns
             df.columns = ["resistance", "depth"] # rename columns
             self.curve_data.append(df)
@@ -68,38 +72,38 @@ class Curves:
             cleaned_df_list.append(copy_df)
         self.curve_data = cleaned_df_list
 
-    def find_positive_subranges_of_resistance(self, df: pd.DataFrame):
-        ranges_above_zero_list = []
-        range_max_height_list = []
+    #def find_positive_subranges_of_resistance(self, df: pd.DataFrame):
+        #ranges_above_zero_list = []
+        #range_max_height_list = []
     
-        in_range = False
-        range_start_idx = None
-        range_max_resistance = 0
+        #in_range = False
+        #range_start_idx = None
+        #range_max_resistance = 0
     
-        for i, res in enumerate(df["resistance"]):
-            if res > 0:
-                if not in_range:
+        #for i, res in enumerate(df["resistance"]):
+            #if res > 0:
+                #if not in_range:
                     # starting a new range
-                    in_range = True
-                    if i > 0: range_start_idx = i - 1
-                    else: range_start_idx = 0
-                    range_max_resistance = res
-                else:
-                    range_max_resistance = max(range_max_resistance, res)
-            elif in_range:
+                    #in_range = True
+                    #if i > 0: range_start_idx = i - 1
+                    #else: range_start_idx = 0
+                    #range_max_resistance = res
+                #else:
+                    #range_max_resistance = max(range_max_resistance, res)
+            #elif in_range:
                 # end of a positive range
-                ranges_above_zero_list.append((range_start_idx, i))
-                range_max_height_list.append(range_max_resistance)
-                in_range = False
+                #ranges_above_zero_list.append((range_start_idx, i))
+                #range_max_height_list.append(range_max_resistance)
+                #in_range = False
     
         # handle if last element was part of a range
-        if in_range:
-            ranges_above_zero_list.append((range_start_idx, len(df["resistance"]) - 1))
-            range_max_height_list.append(range_max_resistance)
+        #if in_range:
+            #ranges_above_zero_list.append((range_start_idx, len(df["resistance"]) - 1))
+            #range_max_height_list.append(range_max_resistance)
     
-        return ranges_above_zero_list, range_max_height_list
+        #return ranges_above_zero_list, range_max_height_list
 
-    def filter_subranges(self, subrange_list, subrange_max_resistance_list, subrange_max_resistance):
+    #def filter_subranges(self, subrange_list, subrange_max_resistance_list, subrange_max_resistance):
         max_resistance_overall = max(subrange_max_resistance_list)
         filtered_subranges = []
         for i, pos_range in enumerate(subrange_list):
@@ -107,7 +111,7 @@ class Curves:
                 filtered_subranges.append(pos_range)
         return filtered_subranges
     
-    def get_ground_start_idx(self, df, subrange_max_resistance, spacing_between_ranges, idx):
+    #def get_ground_start_idx(self, df, subrange_max_resistance, spacing_between_ranges, idx):
         subrange_list, subrange_max_resistance_list = self.find_positive_subranges_of_resistance(df)
         if idx == 51:
             print(f"subrange_list: {subrange_list}\nsubrange_max_resistane_list: {subrange_max_resistance_list}")
@@ -147,7 +151,7 @@ class Curves:
         return ground_start_idx
 
 
-    def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
+    #def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
         cleaned_df_list = []
         for idx, df in enumerate(self.curve_data):
             copy_df = df.copy()
@@ -159,6 +163,16 @@ class Curves:
             copy_df["depth"] = copy_df["depth"] - copy_df['depth'].iloc[0]
             cleaned_df_list.append(copy_df)
         self.curve_data = cleaned_df_list
+
+    def remove_data_prior_first_ground_contact(self):
+        cleaned_list = []
+        for i in range(len(self.curve_data)):
+            df = self.curve_data[i]
+            if df['depth'].iloc[0] < self.ground_height[i]:
+                df = df[df['depth'] >= self.ground_height[i]]
+            cleaned_list.append(df)
+            df.loc[:,'depth'] = df['depth'] - df['depth'].min()
+        self.curve_data = cleaned_list
     
     def interpolate(self, num_points):
         interp_df_list = []
@@ -184,15 +198,8 @@ class Curves:
             # if i == 1:
             
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            if "Clay" in self.filenames[i]: #changed "ASTM" to "Clay"
-=======
             if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
->>>>>>> Stashed changes
-=======
-            if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
->>>>>>> Stashed changes
+
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
             else:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
@@ -236,15 +243,8 @@ class Curves:
         #########################################################
 
         # Add title
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        plt.title("All Clay Data Force-Depth Curves") #I changed the title but again no change
-=======
-        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
->>>>>>> Stashed changes
-=======
-        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
->>>>>>> Stashed changes
+
+        plt.title("Super Sand Data Force-Depth Curves") #I changed the title but again no change
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()
@@ -270,7 +270,8 @@ def main():
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
-    curves.remove_data_prior_to_ground(0.1, 0.05)
+    #curves.remove_data_prior_to_ground(0.1, 0.05)
+    curves.remove_data_prior_first_ground_contact()
     curves.interpolate(500)
 
     # plot the data

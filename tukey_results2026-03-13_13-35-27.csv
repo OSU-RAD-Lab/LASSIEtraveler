@@ -1,0 +1,4 @@
+group1,group2,meandiff,p-adj,lower,upper,reject,effectsize(CohensD)
+25% Kaolinte,ASTM,24.4262,0.0,16.6532,32.1993,True,-4.4393930212061266
+25% Kaolinte,Super Sand,55.4769,0.0,47.7038,63.2499,True,-5.616539741886411
+ASTM,Super Sand,31.0506,0.0,23.2776,38.8237,True,-2.8460173497454058

@@ -33,10 +33,14 @@ class Curves:
         self.slopes_Clay100 = []
         self.slopes_other = []
         self.plot_data = []
+        self.ground_height = []
         
     def get_curve_data(self):
         for filename in os.listdir(self.data_src_folder_path):
-            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}", skiprows=2)
+            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}")
+            self.ground_height.append(float(df['ground_height'].loc[0]) * 1/100)
+
+            df = pd.read_csv(f"{self.data_src_folder_path}/{filename}", skiprows=2) #added this in
             df = df[['toeforce_y', 'toe_position_y']] # takes just the two important columns
             df.columns = ["resistance", "depth"] # rename columns
             self.curve_data.append(df)
@@ -82,97 +86,94 @@ class Curves:
             cleaned_df_list.append(copy_df)
         self.curve_data = cleaned_df_list
 
-    def find_positive_subranges_of_resistance(self, df: pd.DataFrame):
-        ranges_above_zero_list = []
-        range_max_height_list = []
+    #def find_positive_subranges_of_resistance(self, df: pd.DataFrame):
+        #ranges_above_zero_list = []
+        #range_max_height_list = []
     
-        in_range = False
-        range_start_idx = None
-        range_max_resistance = 0
+        #in_range = False
+        #range_start_idx = None
+        #range_max_resistance = 0
     
-        for i, res in enumerate(df["resistance"]):
-            if res > 0:
-                if not in_range:
+        #for i, res in enumerate(df["resistance"]):
+            #if res > 0:
+                #if not in_range:
                     # starting a new range
-                    in_range = True
-                    if i > 0: range_start_idx = i - 1
-                    else: range_start_idx = 0
-                    range_max_resistance = res
-                else:
-                    range_max_resistance = max(range_max_resistance, res)
-            elif in_range:
+                    #in_range = True
+                   # if i > 0: range_start_idx = i - 1
+                   # else: range_start_idx = 0
+                   # range_max_resistance = res
+               # else:
+               #     range_max_resistance = max(range_max_resistance, res)
+           # elif in_range:
                 # end of a positive range
-                ranges_above_zero_list.append((range_start_idx, i))
-                range_max_height_list.append(range_max_resistance)
-                in_range = False
+               # ranges_above_zero_list.append((range_start_idx, i))
+               # range_max_height_list.append(range_max_resistance)
+               # in_range = False
     
         # handle if last element was part of a range
-        if in_range:
-            ranges_above_zero_list.append((range_start_idx, len(df["resistance"]) - 1))
-            range_max_height_list.append(range_max_resistance)
+       # if in_range:
+           # ranges_above_zero_list.append((range_start_idx, len(df["resistance"]) - 1))
+           # range_max_height_list.append(range_max_resistance)
     
-        return ranges_above_zero_list, range_max_height_list
+        #return ranges_above_zero_list, range_max_height_list
 
-    def filter_subranges(self, subrange_list, subrange_max_resistance_list, subrange_max_resistance):
-        max_resistance_overall = max(subrange_max_resistance_list)
-        filtered_subranges = []
-        for i, pos_range in enumerate(subrange_list):
-            if subrange_max_resistance_list[i] > max_resistance_overall * subrange_max_resistance:
-                filtered_subranges.append(pos_range)
-        return filtered_subranges
+    #def filter_subranges(self, subrange_list, subrange_max_resistance_list, subrange_max_resistance):
+      #  max_resistance_overall = max(subrange_max_resistance_list)
+      #  filtered_subranges = []
+      #  for i, pos_range in enumerate(subrange_list):
+           # if subrange_max_resistance_list[i] > max_resistance_overall * subrange_max_resistance:
+            #    filtered_subranges.append(pos_range)
+       # return filtered_subranges
     
-    def get_ground_start_idx(self, df, subrange_max_resistance, spacing_between_ranges, idx):
-        subrange_list, subrange_max_resistance_list = self.find_positive_subranges_of_resistance(df)
-        if idx == 51:
-            print(f"subrange_list: {subrange_list}\nsubrange_max_resistane_list: {subrange_max_resistance_list}")
+   # def get_ground_start_idx(self, df, subrange_max_resistance, spacing_between_ranges, idx):
+       # subrange_list, subrange_max_resistance_list = self.find_positive_subranges_of_resistance(df)
+        #if idx == 51:
+           # print(f"subrange_list: {subrange_list}\nsubrange_max_resistane_list: {subrange_max_resistance_list}")
 
-        if len(subrange_list) < 1: return 0
+       # if len(subrange_list) < 1: return 0
         
         # removes subranes below subrange_max_resistance threshold
-        filtered_subranges = self.filter_subranges(subrange_list, subrange_max_resistance_list, subrange_max_resistance)
-        if idx == 51:
+      #  filtered_subranges = self.filter_subranges(subrange_list, subrange_max_resistance_list, subrange_max_resistance)
+       # if idx == 51:
             # print(f"filter_subranges: {filtered_subranges}")
-            depth_value_list = []
-            for start, end in filtered_subranges:
-                depth_value_list.append((float(df['depth'].iloc[start]), float(df['depth'].iloc[end])))
+           # depth_value_list = []
+           # for start, end in filtered_subranges:
+              #  depth_value_list.append((float(df['depth'].iloc[start]), float(df['depth'].iloc[end])))
             # print(f"filter_subranges_values: {depth_value_list}")
 
-        ground_start_idx = filtered_subranges[-1][0] # init ground_start_idx with start of largest curve (last subrange in range_list)
-        if len(filtered_subranges) < 2: return ground_start_idx
+      #  ground_start_idx = filtered_subranges[-1][0] # init ground_start_idx with start of largest curve (last subrange in range_list)
+       # if len(filtered_subranges) < 2: return ground_start_idx
 
 
         # reverse iterate over the filtered subranges and stop when the distance from subrange i to j is too high
-        for i in range(len(filtered_subranges)-2, -1, -1): 
-            subrange_i_start = df["depth"].iloc[filtered_subranges[i][1]]
-            subrange_j_end = df["depth"].iloc[filtered_subranges[i+1][0]]
-            if idx == 51: print(f"{subrange_j_end} - {subrange_i_start} > {spacing_between_ranges} * {df['depth'].iloc[-1] - df['depth'].iloc[0]}")
-            if subrange_j_end - subrange_i_start > spacing_between_ranges * (df['depth'].iloc[-1] - df['depth'].iloc[0]):
-                ground_start_idx = filtered_subranges[i+1][0]
-                break # found our final ground_start_idx
-            else:
-                ground_start_idx = filtered_subranges[i][0]
+      #  for i in range(len(filtered_subranges)-2, -1, -1): 
+          #  subrange_i_start = df["depth"].iloc[filtered_subranges[i][1]]
+          #  subrange_j_end = df["depth"].iloc[filtered_subranges[i+1][0]]
+          #  if idx == 51: print(f"{subrange_j_end} - {subrange_i_start} > {spacing_between_ranges} * {df['depth'].iloc[-1] - df['depth'].iloc[0]}")
+          #  if subrange_j_end - subrange_i_start > spacing_between_ranges * (df['depth'].iloc[-1] - df['depth'].iloc[0]):
+            #    ground_start_idx = filtered_subranges[i+1][0]
+             #   break # found our final ground_start_idx
+          #  else:
+              #  ground_start_idx = filtered_subranges[i][0]
                 
-        if idx == 51: print(f"ground_start_idx: {ground_start_idx}")
+     #   if idx == 51: print(f"ground_start_idx: {ground_start_idx}")
     
         #DEBUG####
-        print("Max Depth:",df['depth'].max()-df['depth'].iloc[ground_start_idx])
+     #   print("Max Depth:",df['depth'].max()-df['depth'].iloc[ground_start_idx])
         #########
 
-        return ground_start_idx
-
-    def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
-        cleaned_df_list = []
-        for idx, df in enumerate(self.curve_data):
-            copy_df = df.copy()
-            start_idx = self.get_ground_start_idx(copy_df, subrange_max_resistance, spacing_between_ranges, idx)
-            copy_df = copy_df.iloc[start_idx:]
-            # copy_df = start_curve_at_ground(copy_df, subrange_max_resistance, spacing_between_ranges)
-            # I've un hashed the above code but "start_curve_at_ground" was undefined,
-            # I've input ground_start_idx in place of it to see if that was the problem, again it was undefined
-            copy_df["depth"] = copy_df["depth"] - copy_df['depth'].iloc[0]
-            cleaned_df_list.append(copy_df)
-        self.curve_data = cleaned_df_list
+       # return ground_start_idx
     
+    def remove_data_prior_first_ground_contact(self):
+        cleaned_list = []
+        for i in range(len(self.curve_data)):
+            df = self.curve_data[i]
+            if df['depth'].iloc[0] < self.ground_height[i]:
+                df = df[df['depth'] >= self.ground_height[i]]
+            cleaned_list.append(df)
+            df.loc[:,'depth'] = df['depth'] - df['depth'].min()
+        self.curve_data = cleaned_list
+
     def interpolate(self, num_points):
         interp_df_list = []
         for df in self.curve_data:
@@ -192,7 +193,7 @@ class Curves:
         plt.xlabel('Depth (m)')
         plt.ylabel('Resistance (N)')
         plt.xlim(0, 0.05)
-        plt.ylim(-1.75, 3.3)
+        plt.ylim(-2.25, 5)
 
     def plot_variable(self, x_vals, y_vals, x_upper, y_upper, x_lower, y_lower, label_mean, label_upper, label_lower, color):
         plt.plot(x_vals, y_vals, label=label_mean,color=color,linestyle='-')
@@ -208,12 +209,12 @@ class Curves:
 
     def compute_slopes(self):
         categories = {
-            'Clay0': self.plot_color1,
-            'ASTM': self.plot_color2,
-            'Clay25': self.plot_color3,
-            'Clay50': self.plot_color4,
-            'Clay75': self.plot_color5,
-            'Clay100': self.plot_color6,
+            'Clay25': self.plot_color1,
+            'Water2.5': self.plot_color2,
+            'Water5': self.plot_color3,
+            'Water7.5': self.plot_color4,
+            'Water10': self.plot_color5,
+            'Water15': self.plot_color6,
         }
 
         slopes = {k: [] for k in  categories.keys()}
@@ -224,6 +225,7 @@ class Curves:
             filename = self.filenames[i]
             opt_slope, _ = curve_fit(self.func, df['depth'], df['resistance'])
             slope = opt_slope[0]
+            print(f"{filename} slope: {slope}")
             matched = False
             for key in categories:
                 if key in filename:
@@ -332,7 +334,8 @@ def main():
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
-    curves.remove_data_prior_to_ground(0.1, 0.05)
+    #curves.remove_data_prior_to_ground(0.1, 0.05)
+    curves.remove_data_prior_first_ground_contact()
     curves.interpolate(500)
 
     # plot the data

@@ -94,7 +94,7 @@ class Curves:
             opt_slope, _ = curve_fit(self.func, depth, resist)
             plt.plot(depth, self.func(depth, opt_slope), 'r--', label=f"slope: {round(opt_slope[0], 2)}")
             plt.legend()
-            save_path = f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}/{self.filenames[i]}.png'
+            save_path = f'{self.plot_dst_folder_path}/{self.filenames[i]}.png'
             print(f'save path: {save_path}')
             plt.savefig(save_path)
             #plt.show()
@@ -143,6 +143,7 @@ def main():
 
     # plot the data
     curves.plot()
+    plt.legend()  
     #output the compiled data to a CSV file
     compiled_df = pd.DataFrame(compiled_data)
     compiled_df.to_csv(f'{sys.argv[2]}/compiled_curve_data.csv', index=False)  

@@ -35,9 +35,13 @@ def open_file_selection():
 
         #clean all non ACII characters
         df.columns = df.columns.str.replace(r"[^\x20-\x7E]", "", regex=True)
+        
+        
 
         #DEBUG
         #print(df)
+        #print(df.columns.tolist())
+        df = df.rename(columns={"condition": "Group"})
         #print()
 
     except ImportError:
