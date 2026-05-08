@@ -167,8 +167,6 @@ class Curves:
             
             if "Apr27" in self.filenames[i]: 
             	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'5%', alpha=.1)
-            elif "Apr29" in self.filenames[i]: 
-            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'7.5%', alpha=.1)
             else:
             	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2,label=f'2.5%', alpha=.1)
 
