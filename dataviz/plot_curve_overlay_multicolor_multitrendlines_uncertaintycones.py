@@ -209,8 +209,8 @@ class Curves:
 
     def compute_slopes(self):
         categories = {
-            'Clay25': self.plot_color1,
-            'Water2.5': self.plot_color2,
+            'Clay%0': self.plot_color1,
+            'ASTM': self.plot_color2,
             'Water5': self.plot_color3,
             'Water7.5': self.plot_color4,
             'Water10': self.plot_color5,
