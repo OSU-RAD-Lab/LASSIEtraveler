@@ -211,7 +211,7 @@ class Curves:
         categories = {
             'Clay%0': self.plot_color1,
             'ASTM': self.plot_color2,
-            'Water5': self.plot_color3,
+            'Clay25': self.plot_color3,
             'Water7.5': self.plot_color4,
             'Water10': self.plot_color5,
             'Water15': self.plot_color6,
