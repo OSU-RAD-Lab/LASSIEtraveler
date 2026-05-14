@@ -1,17 +1,32 @@
 Input for windows powershell terminal:
+<<<<<<< Updated upstream
 python ./dataviz/plot_curve_overlay_multicolor.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT blue red
 
 Curve Slope V3 Input:
 python ./dataviz/curve_slope_V3.py ./data/PILOTMoisture2.5 ./figures/forcedepthviz/PILOT blue
+=======
+python ./dataviz/plot_curve_overlay_multicolor.py ./data/ASTMThirdTrialExtracted ./figure_archive/forcedepthviz/astm blue red
+
+-- Input for windows powershell terminal:
+python ./dataviz/curve_slope_V3.py ./data/ ./figures/forcedepthviz/astm blue
+>>>>>>> Stashed changes
 
 Multi:
 python ./MultiLinePlotter/curve_slope_multi.py ./MultiData/FirstTrialAllData ./MultiFiguresTrendline/FirstTrialFigures blue
 
 With Trendline:
+<<<<<<< Updated upstream
 python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/OG_SuperSand ./figures/forcedepthviz/supersand blue red
 
 Multicolored Trendlines:
 python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
  
+=======
+python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/SuperSandSecondTrial ./figures/forcedepthviz/supersand blue red
+
+-- Multicolored Trendlines:
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/OG_SuperSand ./figures/forcedepthviz/supersand mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
+
+>>>>>>> Stashed changes
 Multicolored Trendlines w/ Uncertainty Cones:
 python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT r orange g aqua b purple

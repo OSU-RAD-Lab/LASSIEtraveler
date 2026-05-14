@@ -151,7 +151,11 @@ class Curves:
         return ground_start_idx
 
 
+<<<<<<< Updated upstream
     #def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
+=======
+    def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
+>>>>>>> Stashed changes
         cleaned_df_list = []
         for idx, df in enumerate(self.curve_data):
             copy_df = df.copy()
@@ -199,7 +203,10 @@ class Curves:
             
 
             if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
             else:
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
@@ -243,8 +250,12 @@ class Curves:
         #########################################################
 
         # Add title
+<<<<<<< Updated upstream
 
         plt.title("Super Sand Data Force-Depth Curves") #I changed the title but again no change
+=======
+        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
+>>>>>>> Stashed changes
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()
@@ -270,8 +281,12 @@ def main():
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
+<<<<<<< Updated upstream
     #curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.remove_data_prior_first_ground_contact()
+=======
+    curves.remove_data_prior_to_ground(0.1, 0.05)
+>>>>>>> Stashed changes
     curves.interpolate(500)
 
     # plot the data

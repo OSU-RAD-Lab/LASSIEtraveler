@@ -196,7 +196,12 @@ class Curves:
         for i in range(len(self.curve_data)):
             # if i == 1:
 
+<<<<<<< Updated upstream
             if "Water2.5" in self.filenames[i]:
+=======
+            if "SuperSand" in self.filenames[i]:
+                print("in clay0")
+>>>>>>> Stashed changes
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
                 opt_slope, _ = curve_fit(self.func, self.curve_data[i]["depth"], self.curve_data[i]["resistance"])
                 print(f'2.5% slope: {opt_slope[0]}')
@@ -283,9 +288,15 @@ class Curves:
             resist = self.curve_data[i]["resistance"]
             depth = self.curve_data[i]["depth"]
 
+<<<<<<< Updated upstream
         plt.plot(x_supersand, y_supersand, label=f'2.5% slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
         plt.plot(x_astm, y_astm, label=f'5% slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
         plt.plot(x_twentyfive, y_twentyfive, label=f'7.5% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
+=======
+        plt.plot(x_supersand, y_supersand, label=f'Super Sand slope: {slopesmean_supersand:.2f}',color='red',linestyle='--')
+        #plt.plot(x_astm, y_astm, label=f'ASTM slope: {slopesmean_astm:.2f}',color='orange',linestyle='--')
+        #plt.plot(x_twentyfive, y_twentyfive, label=f'25% slope: {slopesmean_twentyfive:.2f}',color='green',linestyle='--')
+>>>>>>> Stashed changes
         #plt.plot(x_fifty, y_fifty, label=f'50% slope: {slopesmean_fifty:.2f}',color='aqua',linestyle='--')
         #plt.plot(x_seventyfive, y_seventyfive, label=f'75% slope: {slopesmean_seventyfive:.2f}',color='blue',linestyle='--')
         #plt.plot(x_onehundred, y_onehundred, label=f'100% slope: {slopesmean_onehundred:.2f}',color='purple',linestyle='--')
@@ -354,11 +365,15 @@ def main():
     curves.remove_points_before_min_depth()
 
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
+<<<<<<< Updated upstream
     #curves.remove_data_prior_to_ground(0.1, 0.05)
 
     curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
     curves.remove_data_prior_first_ground_contact()
 
+=======
+    curves.remove_data_prior_first_ground_contact()
+>>>>>>> Stashed changes
     curves.interpolate(500)
 
     # plot the data
