@@ -166,9 +166,9 @@ class Curves:
             # if i == 1:
             
             if "May11" in self.filenames[i]: 
-            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'5%', alpha=.1)
+            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2,label=f'5%')
             else:
-            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2,label=f'2.5%', alpha=.1)
+            	plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2,label=f'2.5%')
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_curve_overlay_multicolor')
         plt.legend()

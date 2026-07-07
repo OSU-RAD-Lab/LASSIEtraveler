@@ -104,69 +104,65 @@ class Curves:
         #return ranges_above_zero_list, range_max_height_list
 
     #def filter_subranges(self, subrange_list, subrange_max_resistance_list, subrange_max_resistance):
-        max_resistance_overall = max(subrange_max_resistance_list)
-        filtered_subranges = []
-        for i, pos_range in enumerate(subrange_list):
-            if subrange_max_resistance_list[i] > max_resistance_overall * subrange_max_resistance:
-                filtered_subranges.append(pos_range)
-        return filtered_subranges
+        #max_resistance_overall = max(subrange_max_resistance_list)
+        #filtered_subranges = []
+        #for i, pos_range in enumerate(subrange_list):
+           # if subrange_max_resistance_list[i] > max_resistance_overall * subrange_max_resistance:
+              #  filtered_subranges.append(pos_range)
+       # return filtered_subranges
     
     #def get_ground_start_idx(self, df, subrange_max_resistance, spacing_between_ranges, idx):
-        subrange_list, subrange_max_resistance_list = self.find_positive_subranges_of_resistance(df)
-        if idx == 51:
-            print(f"subrange_list: {subrange_list}\nsubrange_max_resistane_list: {subrange_max_resistance_list}")
+       # subrange_list, subrange_max_resistance_list = self.find_positive_subranges_of_resistance(df)
+        #if idx == 51:
+         #   print(f"subrange_list: {subrange_list}\nsubrange_max_resistane_list: {subrange_max_resistance_list}")
 
-        if len(subrange_list) < 1: return 0
+       # if len(subrange_list) < 1: return 0
         
         # removes subranes below subrange_max_resistance threshold
-        filtered_subranges = self.filter_subranges(subrange_list, subrange_max_resistance_list, subrange_max_resistance)
-        if idx == 51:
+       # filtered_subranges = self.filter_subranges(subrange_list, subrange_max_resistance_list, subrange_max_resistance)
+        #if idx == 51:
             # print(f"filter_subranges: {filtered_subranges}")
-            depth_value_list = []
-            for start, end in filtered_subranges:
-                depth_value_list.append((float(df['depth'].iloc[start]), float(df['depth'].iloc[end])))
+         #   depth_value_list = []
+            #for start, end in filtered_subranges:
+               # depth_value_list.append((float(df['depth'].iloc[start]), float(df['depth'].iloc[end])))
             # print(f"filter_subranges_values: {depth_value_list}")
 
-        ground_start_idx = filtered_subranges[-1][0] # init ground_start_idx with start of largest curve (last subrange in range_list)
-        if len(filtered_subranges) < 2: return ground_start_idx
+       # ground_start_idx = filtered_subranges[-1][0] # init ground_start_idx with start of largest curve (last subrange in range_list)
+       # if len(filtered_subranges) < 2: return ground_start_idx
 
 
         # reverse iterate over the filtered subranges and stop when the distance from subrange i to j is too high
-        for i in range(len(filtered_subranges)-2, -1, -1): 
-            subrange_i_start = df["depth"].iloc[filtered_subranges[i][1]]
-            subrange_j_end = df["depth"].iloc[filtered_subranges[i+1][0]]
-            if idx == 51: print(f"{subrange_j_end} - {subrange_i_start} > {spacing_between_ranges} * {df['depth'].iloc[-1] - df['depth'].iloc[0]}")
-            if subrange_j_end - subrange_i_start > spacing_between_ranges * (df['depth'].iloc[-1] - df['depth'].iloc[0]):
-                ground_start_idx = filtered_subranges[i+1][0]
-                break # found our final ground_start_idx
-            else:
-                ground_start_idx = filtered_subranges[i][0]
+        #for i in range(len(filtered_subranges)-2, -1, -1): 
+          #  subrange_i_start = df["depth"].iloc[filtered_subranges[i][1]]
+          #  subrange_j_end = df["depth"].iloc[filtered_subranges[i+1][0]]
+          #  if idx == 51: print(f"{subrange_j_end} - {subrange_i_start} > {spacing_between_ranges} * {df['depth'].iloc[-1] - df['depth'].iloc[0]}")
+          #  if subrange_j_end - subrange_i_start > spacing_between_ranges * (df['depth'].iloc[-1] - df['depth'].iloc[0]):
+          #      ground_start_idx = filtered_subranges[i+1][0]
+          #      break # found our final ground_start_idx
+          #  else:
+          #      ground_start_idx = filtered_subranges[i][0]
                 
-        if idx == 51: print(f"ground_start_idx: {ground_start_idx}")
+       # if idx == 51: print(f"ground_start_idx: {ground_start_idx}")
     
         #DEBUG####
-        print("Max Depth:",df['depth'].max()-df['depth'].iloc[ground_start_idx])
+       # print("Max Depth:",df['depth'].max()-df['depth'].iloc[ground_start_idx])
         #########
 
-        return ground_start_idx
+       # return ground_start_idx
 
 
-<<<<<<< Updated upstream
     #def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
-=======
-    def remove_data_prior_to_ground(self, subrange_max_resistance, spacing_between_ranges):
->>>>>>> Stashed changes
-        cleaned_df_list = []
-        for idx, df in enumerate(self.curve_data):
-            copy_df = df.copy()
-            start_idx = self.get_ground_start_idx(copy_df, subrange_max_resistance, spacing_between_ranges, idx)
-            copy_df = copy_df.iloc[start_idx:]
+        #cleaned_df_list = []
+        #for idx, df in enumerate(self.curve_data):
+           # copy_df = df.copy()
+           # start_idx = self.get_ground_start_idx(copy_df, subrange_max_resistance, spacing_between_ranges, idx)
+           # copy_df = copy_df.iloc[start_idx:]
             # copy_df = start_curve_at_ground(copy_df, subrange_max_resistance, spacing_between_ranges)
             # I've un hashed the above code but "start_curve_at_ground" was undefined,
             # I've input ground_start_idx in place of it to see if that was the problem, again it was undefined
-            copy_df["depth"] = copy_df["depth"] - copy_df['depth'].iloc[0]
-            cleaned_df_list.append(copy_df)
-        self.curve_data = cleaned_df_list
+           # copy_df["depth"] = copy_df["depth"] - copy_df['depth'].iloc[0]
+           # cleaned_df_list.append(copy_df)
+        #self.curve_data = cleaned_df_list
 
     def remove_data_prior_first_ground_contact(self):
         cleaned_list = []
@@ -202,14 +198,11 @@ class Curves:
             # if i == 1:
             
 
-            if "SuperSand" in self.filenames[i]: #changed "ASTM" to "Clay"
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
+            if "Moderate" in self.filenames[i]: #changed "ASTM" to "Clay"
                 plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color1, linewidth=2)
+
             else:
-                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color2, linewidth=2)
+                plt.plot(self.curve_data[i]["depth"], self.curve_data[i]["resistance"], c=self.plot_color3, linewidth=2)
         
             resist = self.curve_data[i]["resistance"]
             depth = self.curve_data[i]["depth"]
@@ -250,12 +243,7 @@ class Curves:
         #########################################################
 
         # Add title
-<<<<<<< Updated upstream
-
-        plt.title("Super Sand Data Force-Depth Curves") #I changed the title but again no change
-=======
-        plt.title("All SuperSand Data Force-Depth Curves") #I changed the title but again no change
->>>>>>> Stashed changes
+        plt.title("Moderate & LooseCompaction Force-Depth Curves") #I changed the title but again no change
 
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_overlayed_rawdata_trendline')
         plt.show()
@@ -281,12 +269,8 @@ def main():
     curves.remove_points_after_max_depth()
     curves.remove_points_before_min_depth()
     #curves.make_resistance_min_equal_zero() #taking out allows for negative forces to be shown
-<<<<<<< Updated upstream
     #curves.remove_data_prior_to_ground(0.1, 0.05)
     curves.remove_data_prior_first_ground_contact()
-=======
-    curves.remove_data_prior_to_ground(0.1, 0.05)
->>>>>>> Stashed changes
     curves.interpolate(500)
 
     # plot the data

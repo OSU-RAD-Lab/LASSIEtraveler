@@ -1,0 +1,4 @@
+group1,group2,meandiff,p-adj,lower,upper,reject,effectsize(CohensD)
+Airy,Loose,8.9813,0.1337,-2.1258,20.0883,False,-1.5139654434745278
+Airy,Moderate,39.1479,0.0,28.2401,50.0558,True,-2.7403360251903854
+Loose,Moderate,30.1667,0.0,18.8881,41.4452,True,-1.9898746756342476
