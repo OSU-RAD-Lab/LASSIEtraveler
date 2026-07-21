@@ -82,15 +82,15 @@ class Curves:
             plt.xlabel('Depth (m)')
             plt.ylabel('Resistance (N)')
             plt.title(self.filenames[i], fontsize=8)
-            plt.xlim(0, 0.05)
-            plt.ylim(-1.75, 3.3)
-        
+
 
             resist = self.curve_data[i]["resistance"]
             depth = self.curve_data[i]["depth"]
 
             plt.plot(depth, resist, c=self.plot_color, linewidth=2)
             opt_slope, _ = curve_fit(self.func, depth, resist)
+            plt.xlim(0, 0.05)
+            plt.ylim(0, max(resist) * 1.1)
             plt.plot(depth, self.func(depth, opt_slope), 'r--', label=f"slope: {round(opt_slope[0], 2)}")
             plt.legend()
             save_path = f'{self.plot_dst_folder_path}/{self.filenames[i]}.png'

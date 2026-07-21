@@ -1,32 +1,29 @@
 Input for windows powershell terminal:
-<<<<<<< Updated upstream
-python ./dataviz/plot_curve_overlay_multicolor.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT blue red
+python ./dataviz/plot_curve_overlay_multicolor.py ./data/Compaction/LooseCompaction ./figures/forcedepthviz/Compaction blue red
 
 Curve Slope V3 Input:
-python ./dataviz/curve_slope_V3.py ./data/PILOTMoisture2.5 ./figures/forcedepthviz/PILOT blue
-=======
-python ./dataviz/plot_curve_overlay_multicolor.py ./data/ASTMThirdTrialExtracted ./figure_archive/forcedepthviz/astm blue red
-
--- Input for windows powershell terminal:
-python ./dataviz/curve_slope_V3.py ./data/ ./figures/forcedepthviz/astm blue
->>>>>>> Stashed changes
+python ./dataviz/curve_slope_V3.py ./data/Moisture_Compaction/10Moisture/TEST_Anomaly ./figures/forcedepthviz/Moisture_Compaction/10Moisture/Super_Compaction blue
 
 Multi:
 python ./MultiLinePlotter/curve_slope_multi.py ./MultiData/FirstTrialAllData ./MultiFiguresTrendline/FirstTrialFigures blue
 
 With Trendline:
-<<<<<<< Updated upstream
-python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/OG_SuperSand ./figures/forcedepthviz/supersand blue red
+python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/Compaction/data/Compaction/AllCompactionOutliersRemoved ./figures/forcedepthviz/Compaction blue red grey
 
 Multicolored Trendlines:
-python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
+python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/Compaction/ModerateLooseCompaction ./figures/forcedepthviz/Compaction mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
  
-=======
-python ./dataviz/plot_curve_overlay_multicolor_onetrendline.py ./data/SuperSandSecondTrial ./figures/forcedepthviz/supersand blue red
-
--- Multicolored Trendlines:
-python ./dataviz/plot_curve_overlay_multicolor_multitrendlines.py ./data/OG_SuperSand ./figures/forcedepthviz/supersand mistyrose peachpuff lightgreen paleturquoise lightsteelblue thistle grey
-
->>>>>>> Stashed changes
 Multicolored Trendlines w/ Uncertainty Cones:
 python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT r orange g aqua b purple
+
+Slope vs Density plotter:
+python ./dataviz/density_slope_plotter.py ./data/Moisture_Compaction/20Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/20Moisture red orange green blue purple
+
+Force Vs Depth Color Scale Plotter:
+python ./dataviz/force_depth_density_colorscale.py ./data/Moisture_Compaction/20Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/20Moisture black
+
+Slope Vs Density Overlay Plotter:
+python ./dataviz/density_slope_plotter_overlay.py ./data/Moisture_Compaction/AllMoisture ./figures/forcedepthviz/Moisture_Compaction "#fde725" "#7ad151" "#22a884" "#2a788e" "#414487" "#440154"
+
+Slope Vs Density Overlay Plotter w/ Uncertainty Cones:
+python ./dataviz/density_slope_plotter_overlay_uncertaintycones.py ./data/Moisture_Compaction/AllMoisture ./figures/forcedepthviz/Moisture_Compaction "#fde725" "#7ad151" "#22a884" "#2a788e" "#414487" "#440154"
