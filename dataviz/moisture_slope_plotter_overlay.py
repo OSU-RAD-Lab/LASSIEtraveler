@@ -1,14 +1,16 @@
 from datetime import date
 from fileinput import filename
+from math import erf
 from tokenize import group
-from tokenize import group
-from turtle import lt
 import pandas as pd
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, leastsq
 import os
+from scipy.special import erf
+from scipy.interpolate import UnivariateSpline
+
 
 
 class Curves:
@@ -110,9 +112,11 @@ class Curves:
         return category, None
     
     def parse_moisture_level(self, filename):
-        moisture_levels = ["Water2.5", "Water5", "Water7.5", "Water10", "Water15", "Water20", "Water30"]
+        moisture_levels = ["Water2.5", "Water5", "Water10", "Water15", "Water20", "Water30"]
         for moisture in moisture_levels:
             if moisture in filename:
+                #replace Water2.5 to 2.5
+                moisture = float(moisture.replace("Water", ""))
                 return moisture
         return None
 
@@ -123,9 +127,18 @@ class Curves:
     def func(self, x, a):
         return a * x
 
+    def asymGaussian(self, x, p):
+        amp = (p[0] / (p[2] * np.sqrt(2 * np.pi)))
+        spread = np.exp((-(x - p[1]) ** 2.0) / (2 * p[2] ** 2.0))
+        skew = (1 + erf((p[3] * (x - p[1])) / (p[2] * np.sqrt(2))))
+        return amp * spread * skew
+
+    def residuals(self, p, y, x):
+        return y - self.asymGaussian(x, p)
+
     def compute_slopes(self):
         # initialize slope storage
-        moisture_levels = ["Water2.5", "Water5", "Water10", "Water15", "Water20", "Water30"]
+        moisture_levels = [2.5, 5, 10, 15, 20, 30]
         compaction_levels = ["Airy", "Loose", "Moderate", "High", "Super"]
         groups = [f"Group{i}" for i in range(1, 6)]
 
@@ -182,7 +195,8 @@ class Curves:
 
         # Fill dictionary from CSV
         for _, row in df.iterrows():
-            moisture = row["moisture"]
+            moisture_str = row["moisture"]
+            moisture = float(moisture_str.replace("Water", ""))
             compaction = row["compaction"]
             group = row["group"]
             density = float(row["density"])
@@ -205,7 +219,7 @@ class Curves:
 
     def build_plot_data(self):
         self.plot_data = []
-        x_vals = np.linspace(0, 0.05, 100)
+        x_vals = np.linspace(0, 40, 100)
 
         for moisture_level in self.group_slopes:
             for compaction_level in self.group_slopes[moisture_level]:
@@ -222,12 +236,11 @@ class Curves:
 
                     density = self.group_densities[moisture_level][compaction_level][group]
                     color = (
-                        self.plot_color1 if moisture_level == "Water2.5" else
-                        self.plot_color2 if moisture_level == "Water5" else
-                        self.plot_color3 if moisture_level == "Water10" else
-                        self.plot_color4 if moisture_level == "Water15" else
-                        self.plot_color5 if moisture_level == "Water20" else
-                        self.plot_color6 if moisture_level == "Water30" else
+                        self.plot_color1 if compaction_level == "Airy" else
+                        self.plot_color2 if compaction_level == "Loose" else
+                        self.plot_color3 if compaction_level == "Moderate" else
+                        self.plot_color4 if compaction_level == "High" else
+                        self.plot_color5 if compaction_level == "Super" else
                         'black'
                     )
 
@@ -237,6 +250,7 @@ class Curves:
                             "moisture_level": moisture_level,
                             "density": density,
                             "slope": slope,
+                            "compaction" : compaction_level,
                             "label": f"{moisture_level} {compaction_level} {group} (slope={slope:.2f} N/m)",
                             "color": color
                         })
@@ -247,16 +261,15 @@ class Curves:
 
     def plot(self):
         plt.figure(figsize=(10, 10))
-        plt.xlabel('Density (g/cm^3)', fontsize=15)
+        plt.xlabel('Moisture Level (%)', fontsize=15)
         plt.ylabel('Slope (N/m)', fontsize=15)
 
-        x = np.array([item["density"] for item in self.plot_data])
+        x = np.array([item["moisture_level"] for item in self.plot_data])
         y = np.array([item["slope"] for item in self.plot_data])
 
-        xmin, xmax = np.min(x), np.max(x)
         ymin, ymax = np.min(y), np.max(y)
 
-        plt.xlim(xmin - xmin*.1, xmax + xmax*.1)
+        plt.xlim(0,40)
         plt.ylim(ymin - ymin*.1, ymax + ymax*.1)
 
         plt.xticks(fontsize=12)
@@ -288,59 +301,100 @@ class Curves:
         seen = set()
 
         for item in self.plot_data:
+            jitter = np.random.uniform(-0.4, 0.4)
             plt.scatter(
-            item["density"],
+            item["moisture_level"]+jitter,
             item["slope"],
             color=item["color"],   # moisture-level color
             s=40,
             alpha=0.9
         )
+            
+        compaction_colors = {
+            "Airy": self.plot_color1,
+            "Loose": self.plot_color2,
+            "Moderate": self.plot_color3,
+            "High": self.plot_color4,
+            "Super": self.plot_color5
+        }
 
+        for comp, col in compaction_colors.items():
+            plt.scatter([],[],color=col)
 
-# ---------------------------------------------------------
-# TRENDLINES PER MOISTURE LEVEL
-# ---------------------------------------------------------
+        plt.legend(title = "Compaction Level", fontsize=12)
 
-        moisture_groups = {}
+        # ---------------------------------------------------------
+        # TRENDLINES PER COMPACTION LEVEL
+        # ---------------------------------------------------------
+
+        compaction_groups = {}
 
         for item in self.plot_data:
-            m = item["moisture_level"]
-            if m not in moisture_groups:
-                moisture_groups[m] = {"densities": [], "slopes": [], "color": item["color"]}
-            moisture_groups[m]["densities"].append(item["density"])
-            moisture_groups[m]["slopes"].append(item["slope"])
+            compaction = item["compaction"]
+            color = item["color"]
 
-        for moisture, data in moisture_groups.items():
-            densities = np.array(data["densities"])
-            slopes = np.array(data["slopes"])
+            if compaction not in compaction_groups:
+                compaction_groups[compaction] = {"moisture": [], "slope": [], "color": color}
+
+            compaction_groups[compaction]["moisture"].append(item["moisture_level"])
+            compaction_groups[compaction]["slope"].append(item["slope"])
+
+        for compaction, data in compaction_groups.items():
+            x_vals = np.array(data["moisture"])
+            y_vals = np.array(data["slope"])
             color = data["color"]
 
-            # Fit quadratic constrained through origin: y = ax² + bx
-            A = np.column_stack([densities**2, densities])
-            coeffs, _, _, _ = np.linalg.lstsq(A, slopes, rcond=None)
-            a, b = coeffs
+            moisture_unique = {}
+            for x,y in zip(x_vals, y_vals):
+                moisture_unique.setdefault(x, []).append(y)
 
-            x_line = np.linspace(0, max(densities), 200)
-            y_line = a * x_line**2 + b * x_line
+            x_clean = np.array(sorted(moisture_unique.keys()))
+            y_clean = np.array([np.mean(moisture_unique[x]) for x in x_clean])
 
-            # Plot trendline (solid, full color)
+            initials = [max(y_clean), np.mean(x_clean), np.std(x_clean),0]
+
+            params, _ = leastsq(self.residuals, initials, args=(y_clean, x_clean))
+
+            spread_threshold = np.std(x_clean) * 0.15
+
+            is_monotonic = np.all(np.diff(y_clean) <= 0) or np.all(np.diff(y_clean) >= 0)
+            if is_monotonic:
+                use_gaussian = False
+            else:
+                use_gaussian = True
+            spread_too_small = params[2] < (np.std(x_clean) * 0.15)
+            center_outside_range = (params[1] < x_clean.min()) or (params[1] > x_clean.max())
+            amplitude_unrealistic = params[0] > (max(y_clean) *3)
+
+            reject_gaussian = spread_too_small or center_outside_range or amplitude_unrealistic
+
+            if is_monotonic or reject_gaussian:
+                spline = UnivariateSpline(x_clean, y_clean, s=np.var(y_clean) * .5)
+                x_line = np.linspace(x_clean.min(), x_clean.max(), 300)
+                y_line = spline(x_line)
+
+            else:
+                x_line = np.linspace(x_clean.min(), x_clean.max(), 300)
+                y_line = self.asymGaussian(x_line, params)
+
+            # Plot spline curve
             plt.plot(
                 x_line, y_line,
                 color=color,
-                linewidth=5,
-                label=f"{moisture}: y = {a:.2f}x² + {b:.2f}x"
+                linewidth=4,
+                label=f"{compaction} trendline"
             )
 
-        plt.title(f'Overlayed Moisture Density vs Force Depth Trendlines', fontsize=18)
+        plt.title(f'Overlayed Moisture Level vs Force Depth Trendlines', fontsize=18)
         plt.legend(fontsize=12)
-        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_density_overlay_plot.png')
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_moisture_overlay_plot.png')
         plt.show()
 
 def main():
         if len(sys.argv) != 9:
             print("incorrect number of arguments given")
             print("incorrect number of arguments given")
-            print("python density_plotter.py data_src_folder plot_dst_folder color1 color2 color3 color4 color5 color6")
+            print("python moisture_slope_plotter.py data_src_folder plot_dst_folder color1 color2 color3 color4 color5 color6")
             sys.exit()
 
         curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])

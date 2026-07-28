@@ -196,9 +196,9 @@ class Curves:
 
     def plot(self):
         plt.figure(figsize=(10, 10))
-        plt.xlabel('Density (g/cm^3)')
-        plt.ylabel('Slope (N/m)')
-        
+        plt.xlabel('Density (g/cm^3)', fontsize=15)
+        plt.ylabel('Slope (N/m)', fontsize=15)
+
         x = np.array([item["density"] for item in self.plot_data])
         y = np.array([item["slope"] for item in self.plot_data])
 
@@ -207,6 +207,9 @@ class Curves:
 
         plt.xlim(xmin - xmin*.1, xmax + xmax*.1)
         plt.ylim(ymin - ymin*.1, ymax + ymax*.1)
+
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
 
     def plot_variable(self, x, y, label, color):
         plt.scatter(x, y, label=label, color=color)
@@ -269,8 +272,8 @@ class Curves:
         plt.plot(x_line, y_line, linestyle='--', linewidth=2,
                 color='black', label=f'Trendline: y = {a:.2f}x² + {b:.2f}x')
 
-        plt.title(f'{moisture_level} Density vs Force Depth Slopes')
-        plt.legend()
+        plt.title(f'{moisture_level} Density vs Force Depth Slopes', fontsize=18)
+        plt.legend(fontsize=12)
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_density_plot.png')
         plt.show()
 

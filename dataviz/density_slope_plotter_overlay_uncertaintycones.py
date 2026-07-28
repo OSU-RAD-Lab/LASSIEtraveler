@@ -253,8 +253,8 @@ class Curves:
 
     def plot(self):
         plt.figure(figsize=(10, 10))
-        plt.xlabel('Density (g/cm^3)', fontsize=12)
-        plt.ylabel('Slope (N/m)', fontsize=12)
+        plt.xlabel('Density (g/cm^3)', fontsize=15)
+        plt.ylabel('Slope (N/m)', fontsize=15)
 
         x = np.array([item["density"] for item in self.plot_data])
         y = np.array([item["slope"] for item in self.plot_data])
@@ -264,6 +264,9 @@ class Curves:
 
         plt.xlim(xmin - xmin*.1, xmax + xmax*.1)
         plt.ylim(ymin - ymin*.1, ymax + ymax*.1)
+
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
 
     def plot_variable(self, x, y, label, color):
         plt.scatter(x, y, label=label, color=color)
@@ -350,8 +353,8 @@ class Curves:
             
             plt.fill_between(x_line, y_line_lower, y_line_upper, color=color, alpha=0.5)
 
-        plt.title(f'Overlayed Moisture Density vs Force Depth Trendlines', fontsize=14)
-        plt.legend()
+        plt.title(f'Overlayed Moisture Density vs Force Depth Trendlines', fontsize=18)
+        plt.legend(fontsize=12)
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_density_overlay_plot_uncertaintycones.png')
         plt.show()
 
@@ -362,7 +365,7 @@ def main():
             print("python density_plotter.py data_src_folder plot_dst_folder color1 color2 color3 color4 color5 color6")
             sys.exit()
 
-        curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+        curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
 
         curves.get_curve_data()
         curves.flip_curve_over_yaxis()

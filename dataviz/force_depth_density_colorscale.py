@@ -249,9 +249,9 @@ class Curves:
                 
                 fig, ax = plt.subplots(figsize=(12, 10))
 
-                ax.set_xlabel('Depth (m)')
-                ax.set_ylabel('Resistance (N)')
-                ax.set_title(f"{moisture_level}% {category} {group} -Force Depth Curve Colored by Density with Nonlinear Trendline")
+                ax.set_xlabel('Depth (m)', fontsize=15)
+                ax.set_ylabel('Resistance (N)', fontsize=15)
+                ax.set_title(f"{moisture_level}% {category} {group} -Force Depth Curve Colored by Density with Nonlinear Trendline", fontsize=18)
                 # Continuous Cividis colormap
                 cividis_r = plt.cm.get_cmap("cividis_r")
 
@@ -325,6 +325,8 @@ class Curves:
                 bounds_x, bounds_y = self.get_global_axis_bounds()
                 ax.set_xlim(bounds_x)
                 ax.set_ylim(bounds_y)
+                ax.set_xticklabels(ax.get_xticklabels(), fontsize=12)
+                ax.set_yticklabels(ax.get_yticklabels(), fontsize=12)
 
                 density_val = self.group_densities[category][group]
 
@@ -333,7 +335,7 @@ class Curves:
                 ]
 
                 handles = [plt.Line2D([], [], color='white') for _ in legend_lines]
-                ax.legend(handles, legend_lines, fontsize=10, loc='upper right', frameon=True)
+                ax.legend(handles, legend_lines, fontsize=12, loc='upper right', frameon=True)
 
                 norm = mpl.colors.Normalize(vmin=expanded_min, vmax=expanded_max)
                 cmap = plt.cm.get_cmap("cividis_r")

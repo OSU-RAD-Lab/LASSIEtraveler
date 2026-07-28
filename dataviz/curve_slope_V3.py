@@ -79,9 +79,9 @@ class Curves:
     def plot(self):
         for i in range(len(self.curve_data)):
             plt.figure(figsize=(8,8))
-            plt.xlabel('Depth (m)')
-            plt.ylabel('Resistance (N)')
-            plt.title(self.filenames[i], fontsize=8)
+            plt.xlabel('Depth (m)', fontsize=15)
+            plt.ylabel('Resistance (N)', fontsize=15)
+            plt.title(self.filenames[i], fontsize=18)
 
 
             resist = self.curve_data[i]["resistance"]
@@ -91,8 +91,10 @@ class Curves:
             opt_slope, _ = curve_fit(self.func, depth, resist)
             plt.xlim(0, 0.05)
             plt.ylim(0, max(resist) * 1.1)
+            plt.xticks(fontsize=15)
+            plt.yticks(fontsize=15)
             plt.plot(depth, self.func(depth, opt_slope), 'r--', label=f"slope: {round(opt_slope[0], 2)}")
-            plt.legend()
+            plt.legend(fontsize=12)
             save_path = f'{self.plot_dst_folder_path}/{self.filenames[i]}.png'
             print(f'save path: {save_path}')
             plt.savefig(save_path)

@@ -17,10 +17,10 @@ Multicolored Trendlines w/ Uncertainty Cones:
 python ./dataviz/plot_curve_overlay_multicolor_multitrendlines_uncertaintycones.py ./data/PILOTMoisture7.5_Moisture5_Moisture2.4_OutliersRemoved ./figures/forcedepthviz/PILOT r orange g aqua b purple
 
 Slope vs Density plotter:
-python ./dataviz/density_slope_plotter.py ./data/Moisture_Compaction/20Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/20Moisture red orange green blue purple
+python ./dataviz/density_slope_plotter.py ./data/Moisture_Compaction/30Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/30Moisture red orange green blue purple
 
 Force Vs Depth Color Scale Plotter:
-python ./dataviz/force_depth_density_colorscale.py ./data/Moisture_Compaction/20Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/20Moisture black
+python ./dataviz/force_depth_density_colorscale.py ./data/Moisture_Compaction/30Moisture/All_Compaction ./figures/forcedepthviz/Moisture_Compaction/30Moisture black
 
 Slope Vs Density Overlay Plotter:
 python ./dataviz/density_slope_plotter_overlay.py ./data/Moisture_Compaction/AllMoisture ./figures/forcedepthviz/Moisture_Compaction "#fde725" "#7ad151" "#22a884" "#2a788e" "#414487" "#440154"
