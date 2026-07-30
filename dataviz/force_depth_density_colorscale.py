@@ -112,23 +112,36 @@ class Curves:
             raise ValueError(f"Could not parse category/group from filename: {filename}")
 
         return category, group, moisture_level
-
+    
     def get_density(self):
+        """
+        Automatically assign densities ONLY for category/group pairs that appear
+        in the dataset. No user input required.
+        """
+
+        # Initialize empty structure
         self.group_densities = {
             "Airy": {},
             "Loose": {},
             "Moderate": {},
             "High": {},
-            "Super" :{}
+            "Super": {}
         }
 
-        for category in ["Airy","Loose", "Moderate", "High", "Super"]:
-            for i in range(1, 5):
-                g = f"Group{i}"
-                self.group_densities[category][g] = float(
-                    input(f"Enter density for {category} {g}: ")
-                )
-        print("DENSITIES:", self.group_densities)
+        # Find which category/group pairs actually appear
+        present = set()
+        for filename in self.filenames:
+            category, group, _ = self.parse_filename(filename)
+            present.add((category, group))
+
+
+        print("\nEnter densities ONLY for the following category/group pairs:")
+        for category, group in sorted(present):
+            density = float(input(f"  Density for {category} {group}: "))
+            self.group_densities[category][group] = density
+
+        print("\nLoaded densities:")
+        print(self.group_densities)
 
 
     def get_global_axis_bounds(self):
@@ -147,9 +160,9 @@ class Curves:
             category, group, moisture_level = self.parse_filename(self.filenames[i])
 
         fig, ax = plt.subplots(figsize=(12, 10))
-        ax.set_xlabel('Depth (m)')
-        ax.set_ylabel('Resistance (N)')
-        ax.set_title(f"{moisture_level}% Force Depth Curves Colored by Density with Nonlinear Trendlines")
+        ax.set_xlabel('Depth (m)', fontsize=15)
+        ax.set_ylabel('Resistance (N)', fontsize=15)
+        ax.set_title(f"{moisture_level}% Force Depth Curves Colored by Density with Nonlinear Trendlines", fontsize=18)
         # Continuous Cividis colormap
         cividis_r = plt.cm.get_cmap("cividis_r")
 
@@ -212,18 +225,36 @@ class Curves:
         ax.set_xlim(x_bounds)
         ax.set_ylim(y_bounds)
 
-        # ---- LEGEND WITH INPUTTED DENSITIES ----
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+
+        # Track which category/group pairs actually appear in the plot
+        present = set()
+
+        for filename in self.filenames:
+            category, group, _ = self.parse_filename(filename)
+            present.add((category, group))
+
         legend_entries = []
+
         for category in self.group_densities:
+            used_groups = [
+                group for group in self.group_densities[category] 
+                if (category, group) in present
+            ]
+            if not used_groups:
+                continue
+
             text = f"{category}: " + ", ".join(
                 f"{group}={self.group_densities[category][group]} (g/cm^3)" 
-                for group in self.group_densities[category]
+                for group in used_groups
             )
+
             legend_entries.append(text)
 
         # Invisible handles (so legend shows only text)
         handles = [plt.Line2D([], [], color='white') for _ in legend_entries]
-        ax.legend(handles, legend_entries, fontsize=9, loc='upper right', frameon=True)
+        ax.legend(handles, legend_entries, fontsize=12, loc='upper left', frameon=True)
 
         # ---- SINGLE COLORBAR PER FIGURE ----
         norm = mpl.colors.Normalize(vmin=expanded_min, vmax=expanded_max)
@@ -249,8 +280,8 @@ class Curves:
                 
                 fig, ax = plt.subplots(figsize=(12, 10))
 
-                ax.set_xlabel('Depth (m)', fontsize=15)
-                ax.set_ylabel('Resistance (N)', fontsize=15)
+                ax.set_xlabel('Depth (m)')
+                ax.set_ylabel('Resistance (N)')
                 ax.set_title(f"{moisture_level}% {category} {group} -Force Depth Curve Colored by Density with Nonlinear Trendline", fontsize=18)
                 # Continuous Cividis colormap
                 cividis_r = plt.cm.get_cmap("cividis_r")
@@ -335,7 +366,7 @@ class Curves:
                 ]
 
                 handles = [plt.Line2D([], [], color='white') for _ in legend_lines]
-                ax.legend(handles, legend_lines, fontsize=12, loc='upper right', frameon=True)
+                ax.legend(handles, legend_lines, fontsize=10, loc='upper right', frameon=True)
 
                 norm = mpl.colors.Normalize(vmin=expanded_min, vmax=expanded_max)
                 cmap = plt.cm.get_cmap("cividis_r")
