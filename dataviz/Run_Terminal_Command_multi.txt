@@ -33,3 +33,6 @@ python ./dataviz/moisture_slope_plotter_overlay.py ./data/Moisture_Compaction/Al
 
 Slope Vs. Moisture Overlay Color Scale Plotter:
 python ./dataviz/moisture_slope_plotter_colorscale.py ./data/Moisture_Compaction/AllMoisture ./figures/forcedepthviz/Moisture_Compaction "#fde725" "#7ad151" "#22a884" "#2a788e" "#414487" "#440154"
+
+Frequency Vs. Density Histogram
+python ./dataviz/moisture_slope_plotter_colorscale.py ./data/Moisture_Compaction/AllMoisture ./figures/forcedepthviz/Moisture_Compaction "#fde725" "#7ad151" "#22a884" "#2a788e" "#414487" "#440154"
