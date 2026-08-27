@@ -45,9 +45,10 @@ def plot_moisture_graph(df):
 
     # Scatter plot
     for m in moisture_levels:
-        subset = df[df["moisture"] == m].sort_values("density")
+        subset = df[df["moisture"] == m].sort_values("dry_density")
         plt.scatter(
-            subset["density"],
+            # subset["bulk_density"],
+            subset["dry_density"],
             subset["sensor_reading"],
             color=color_map[m],
             s=120,
@@ -57,7 +58,8 @@ def plot_moisture_graph(df):
 
         # Draw line AFTER scatter so it sits on top
         plt.plot(
-            subset["density"],
+            # subset["bulk_density"],
+            subset["dry_density"],
             subset["sensor_reading"],
             color=color_map[m],
             linewidth=3,
@@ -70,9 +72,9 @@ def plot_moisture_graph(df):
     ax.set_axisbelow(True)
     plt.grid(True)
 
-    plt.xlabel("Density", fontsize=18)
+    plt.xlabel("Dry Density (g/cm³)", fontsize=18) # alter for correct density type
     plt.ylabel("Moisture Sensor Reading", fontsize=18)
-    plt.title("Sensor Reading vs Density (Color-Coded Moisture Levels)", fontsize=20)
+    plt.title("Sensor Reading vs Dry Density (Color-Coded Moisture Levels)", fontsize=20) # alter for correct density type
 
     plt.legend(title = "Moisture Level", fontsize = 15)
     plt.tight_layout()

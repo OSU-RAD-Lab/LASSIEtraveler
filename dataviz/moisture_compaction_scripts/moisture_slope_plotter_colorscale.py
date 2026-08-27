@@ -1,14 +1,21 @@
 from datetime import date
 from fileinput import filename
+from math import erf
 from tokenize import group
-from tokenize import group
-from turtle import lt
+from matplotlib import cm, colors
+from matplotlib.pylab import norm
 import pandas as pd
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, leastsq
 import os
+import plotly.express as px
+from textwrap import wrap
+import matplotlib as mpl
+import matplotlib.cm as cm
+import matplotlib.colors as colors
+from matplotlib.colors import LinearSegmentedColormap
 
 
 class Curves:
@@ -110,9 +117,11 @@ class Curves:
         return category, None
     
     def parse_moisture_level(self, filename):
-        moisture_levels = ["Water2.5", "Water5", "Water7.5", "Water10", "Water15", "Water20", "Water30"]
+        moisture_levels = ["Water2.5", "Water5", "Water10", "Water15", "Water20", "Water30"]
         for moisture in moisture_levels:
             if moisture in filename:
+                #replace Water2.5 to 2.5
+                moisture = float(moisture.replace("Water", ""))
                 return moisture
         return None
 
@@ -125,7 +134,7 @@ class Curves:
 
     def compute_slopes(self):
         # initialize slope storage
-        moisture_levels = ["Water2.5", "Water5", "Water10", "Water15", "Water20", "Water30"]
+        moisture_levels = [2.5, 5, 10, 15, 20, 30]
         compaction_levels = ["Airy", "Loose", "Moderate", "High", "Super"]
         groups = [f"Group{i}" for i in range(1, 6)]
 
@@ -182,10 +191,13 @@ class Curves:
 
         # Fill dictionary from CSV
         for _, row in df.iterrows():
-            moisture = row["moisture"]
+            moisture_str = row["moisture"]
+            moisture = float(moisture_str.replace("Water", ""))
             compaction = row["compaction"]
             group = row["group"]
-            density = float(row["density"])
+
+            ### switch between bulk and dry density here ###
+            density = float(row["bulk_density"]) # dry_density or bulk_density
 
             # Create moisture level if missing
             if moisture not in self.group_densities:
@@ -195,7 +207,7 @@ class Curves:
             if compaction not in self.group_densities[moisture]:
                 self.group_densities[moisture][compaction] = {}
             
-            self.group_densities[moisture][compaction][group] = density
+            self.group_densities[moisture][compaction][group]= density
             
         print("\nLoaded density values from .csv")
 
@@ -205,7 +217,18 @@ class Curves:
 
     def build_plot_data(self):
         self.plot_data = []
-        x_vals = np.linspace(0, 0.05, 100)
+
+        all_densities = [
+            self.group_densities[m][c][g]
+            for m in self.group_densities
+            for c in self.group_densities[m]
+            for g in self.group_densities[m][c]
+        ]
+
+        dmin, dmax = min(all_densities), max(all_densities)
+
+        self.dmin = dmin
+        self.dmax = dmax
 
         for moisture_level in self.group_slopes:
             for compaction_level in self.group_slopes[moisture_level]:
@@ -221,15 +244,9 @@ class Curves:
                             continue
 
                     density = self.group_densities[moisture_level][compaction_level][group]
-                    color = (
-                        self.plot_color1 if moisture_level == "Water2.5" else
-                        self.plot_color2 if moisture_level == "Water5" else
-                        self.plot_color3 if moisture_level == "Water10" else
-                        self.plot_color4 if moisture_level == "Water15" else
-                        self.plot_color5 if moisture_level == "Water20" else
-                        self.plot_color6 if moisture_level == "Water30" else
-                        'black'
-                    )
+
+                    norm_density = (density - self.dmin) / (self.dmax - self.dmin) if self.dmax != self.dmin else 0
+                    grey_color = plt.cm.Greys(norm_density)  # darker = higher density
 
                     # Store each slope individually
                     for slope in slopes:
@@ -237,8 +254,8 @@ class Curves:
                             "moisture_level": moisture_level,
                             "density": density,
                             "slope": slope,
+                            "compaction" : compaction_level,
                             "label": f"{moisture_level} {compaction_level} {group} (slope={slope:.2f} N/m)",
-                            "color": color
                         })
 
     # ---------------------------------------------------------
@@ -246,21 +263,22 @@ class Curves:
     # ---------------------------------------------------------
 
     def plot(self):
-        plt.figure(figsize=(10, 10))
-        plt.xlabel('Density (g/cm^3)', fontsize=15)
-        plt.ylabel('Slope (N/m)', fontsize=15)
+        plt.figure(figsize=(15, 15))
+        plt.xlabel('Moisture Level (%)', fontsize=30)
+        plt.ylabel('Soil Strength (N/m)', fontsize=30)
 
-        x = np.array([item["density"] for item in self.plot_data])
+        x = np.array([item["moisture_level"] for item in self.plot_data])
         y = np.array([item["slope"] for item in self.plot_data])
 
-        xmin, xmax = np.min(x), np.max(x)
         ymin, ymax = np.min(y), np.max(y)
 
-        plt.xlim(xmin - xmin*.1, xmax + xmax*.1)
+        plt.xlim(0,32)
         plt.ylim(ymin - ymin*.1, ymax + ymax*.1)
 
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
+
+        cividis_r = plt.cm.get_cmap("cividis_r")
 
     def plot_variable(self, x, y, label, color):
         plt.scatter(x, y, label=label, color=color)
@@ -287,60 +305,54 @@ class Curves:
         # Scatter each slope individually
         seen = set()
 
+        norm = colors.Normalize(vmin=self.dmin, vmax=self.dmax)
+        cmap = plt.cm.get_cmap("cividis_r")
+
+
+        scatter_points = []
+
         for item in self.plot_data:
-            plt.scatter(
-            item["density"],
+            jitter = np.random.uniform(-0.2, 0.2)
+            sc = plt.scatter(
+            item["moisture_level"] + jitter,
             item["slope"],
-            color=item["color"],   # moisture-level color
-            s=40,
+            c=item["density"],
+            cmap=cmap,
+            norm=norm,   # moisture-level color
+            s=100,
             alpha=0.9
         )
+        scatter_points.append(sc)
 
+        cbar = plt.colorbar(scatter_points[-1])
+        # cbar.set_label("Bulk Density (g/cm³)", fontsize=15)
+        cbar.set_label("Bulk Density (g/cm³)", fontsize=30) ### Change label to Dry Density ###
+        cbar.ax.tick_params(labelsize=20)
 
-# ---------------------------------------------------------
-# TRENDLINES PER MOISTURE LEVEL
-# ---------------------------------------------------------
+        
+        # Compaction legend colors
+        compaction_colors = {
+            "Airy": self.plot_color1,
+            "Loose": self.plot_color2,
+            "Moderate": self.plot_color3,
+            "High": self.plot_color4,
+            "Super": self.plot_color5
+        }
+        
+        for comp, col in compaction_colors.items():
+            plt.scatter([],[],color=col)
 
-        moisture_groups = {}
-
-        for item in self.plot_data:
-            m = item["moisture_level"]
-            if m not in moisture_groups:
-                moisture_groups[m] = {"densities": [], "slopes": [], "color": item["color"]}
-            moisture_groups[m]["densities"].append(item["density"])
-            moisture_groups[m]["slopes"].append(item["slope"])
-
-        for moisture, data in moisture_groups.items():
-            densities = np.array(data["densities"])
-            slopes = np.array(data["slopes"])
-            color = data["color"]
-
-            # Fit quadratic constrained through origin: y = ax² + bx
-            A = np.column_stack([densities**2, densities])
-            coeffs, _, _, _ = np.linalg.lstsq(A, slopes, rcond=None)
-            a, b = coeffs
-
-            x_line = np.linspace(0, max(densities), 200)
-            y_line = a * x_line**2 + b * x_line
-
-            # Plot trendline (solid, full color)
-            plt.plot(
-                x_line, y_line,
-                color=color,
-                linewidth=5,
-                label=f"{moisture}: y = {a:.2f}x² + {b:.2f}x"
-            )
-
-        plt.title(f'Overlayed Moisture Density vs Force Depth Trendlines', fontsize=18)
-        plt.legend(fontsize=12)
-        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_density_overlay_plot.png')
+        plt.legend(title = "Compaction Level", fontsize=20)
+        plt.title(f'Soil Strength Trendlines vs Moisture Level', fontsize=40)
+        plt.legend(fontsize=20)
+        plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_moisture_overlay_plot.png')
         plt.show()
 
 def main():
         if len(sys.argv) != 9:
             print("incorrect number of arguments given")
             print("incorrect number of arguments given")
-            print("python density_plotter.py data_src_folder plot_dst_folder color1 color2 color3 color4 color5 color6")
+            print("python moisture_slope_plotter.py data_src_folder plot_dst_folder color1 color2 color3 color4 color5 color6")
             sys.exit()
 
         curves = Curves(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
