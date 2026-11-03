@@ -343,7 +343,7 @@ class Curves:
             plt.scatter([],[],color=col)
 
         plt.legend(title = "Compaction Level", fontsize=20)
-        plt.title(f'Soil Strength Trendlines vs Moisture Level', fontsize=40)
+        plt.title(f'Soil Strength Trendlines vs Moisture Level w/ Bulk Density', fontsize=40)
         plt.legend(fontsize=20)
         plt.savefig(f'{self.plot_dst_folder_path}/{date.today().strftime("%b_%d_%Y")}_moisture_overlay_plot.png')
         plt.show()

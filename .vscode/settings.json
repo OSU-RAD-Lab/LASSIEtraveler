@@ -1,0 +1,5 @@
+{
+    "cmake.sourceDirectory": "C:/Users/jrpup/OneDrive/Desktop/LASSIEtraveler/esp_32/MoistureSensor",
+    "C_Cpp.default.compilerPath": "c:\\Users\\jrpup\\OneDrive\\Desktop\\LASSIEtraveler\\can_esp32\\can_transmit.c",
+    "idf.currentSetup": "C:\\esp\\v6.0.2\\esp-idf"
+}
