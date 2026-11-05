@@ -147,3 +147,4 @@ void app_main(void)
     ESP_ERROR_CHECK(twai_node_disable(twai_listener_ctx.node_hdl));
     ESP_ERROR_CHECK(twai_node_delete(twai_listener_ctx.node_hdl));
 }
+

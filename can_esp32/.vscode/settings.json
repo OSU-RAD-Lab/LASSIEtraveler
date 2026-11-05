@@ -20,9 +20,9 @@
     }
   },
   "idf.openOcdConfigs": [
-    "board/esp32-wrover-kit-3.3v.cfg"
+    "board/esp32-bridge.cfg"
   ],
-  "idf.port": "detect",
+  "idf.port": "COM7",
   "idf.currentSetup": "C:\\esp\\v6.0.2\\esp-idf",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32"
@@ -31,6 +31,7 @@
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=c:\\Users\\jrpup\\OneDrive\\Desktop\\LASSIEtraveler\\can_esp32\\can_esp32\\build"
-  ]
+    "--compile-commands-dir=c:\\Users\\jrpup\\sample_project\\build"
+  ],
+  "idf.flashType": "UART"
 }
