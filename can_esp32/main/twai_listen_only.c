@@ -13,7 +13,7 @@
 #include "esp_twai_onchip.h"
 
 #define TWAI_LISTENER_TX_GPIO   -1  // Listen only node doesn't need TX pin
-#define TWAI_LISTENER_RX_GPIO   3
+#define TWAI_LISTENER_RX_GPIO   5
 #define TWAI_BITRATE            1000000
 
 // Message IDs (must match sender)
