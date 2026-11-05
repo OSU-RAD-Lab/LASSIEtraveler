@@ -27,7 +27,7 @@ ESP_ERROR_CHECK(twai_node_enable(node_hdl));
 
 uint8_t send_buff[8] = {0};
 twai_frame_t tx_msg = {
-    .header.id = 0x1,       // Message ID
+    .header.id = 0x104,       // Message ID
     .dlc = 8,           
     .header.ide = true,         // Use 29-bit extended ID format
     .buffer = send_buff,        // Pointer to data to transmit
@@ -40,7 +40,7 @@ ESP_ERROR_CHECK(twai_node_transmit_wait_all_done(node_hdl, -1));  // Wait for tr
 
 // #define TWAI_TX_GPIO  ((gpio_num_t)CONFIG_CAN_TX_GPIO_NUM)
 // #define TWAI_RX_GPIO  ((gpio_num_t)CONFIG_CAN_RX_GPIO_NUM)
-// #define MSG_ID       0x150
+// #define MSG_ID       0x104
 // #define EXAMPLE_TAG  "TWAI SENDER"
 
 //  // TWAI timing configuration (125 Kbps)
