@@ -8,11 +8,12 @@
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "freertos/task.h"
 #include "esp_log.h"
 #include "esp_twai.h"
+#include "esp_timer.h"
 #include "esp_twai_onchip.h"
 
 #define TWAI_LISTENER_TX_GPIO   4  // Listen only node doesn't need TX pin
@@ -21,6 +22,7 @@
 
 // Message IDs (must match sender)
 #define TWAI_DATA_ID            0x104
+// #define TWAI_HEARTBEAT_ID       0x110
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
@@ -93,11 +95,11 @@ static void periodic_send_task(void *arg)
 {
     const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
     TickType_t last_wake = xTaskGetTickCount();
+    twai_listener_ctx_t *ctx = arg;
 
     for (;;) {
-        // Send your CAN message here.
-        // Keep its frame/payload valid until TX completes.
 
+        // insert can message send here
         xTaskDelayUntil(&last_wake, period);
     }
 }
@@ -162,7 +164,7 @@ void app_main(void)
         periodic_send_task,
         "can_send",
         4096,       // ESP-IDF stack size in bytes
-        NULL,       // Task argument
+        &twai_listener_ctx,       // Task argument
         5,          // Priority
         NULL
     );
