@@ -18,6 +18,7 @@
 
 // Message IDs (must match sender)
 #define TWAI_DATA_ID            0x104
+#define TWAI_DATA_ID            0x104
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
@@ -148,3 +149,4 @@ void app_main(void)
     ESP_ERROR_CHECK(twai_node_disable(twai_listener_ctx.node_hdl));
     ESP_ERROR_CHECK(twai_node_delete(twai_listener_ctx.node_hdl));
 }
+
