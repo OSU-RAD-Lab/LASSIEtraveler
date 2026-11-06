@@ -22,7 +22,7 @@
 
 // Message IDs (must match sender)
 #define TWAI_DATA_ID            0x104
-#define TWAI_HEARTBEAT_ID       0x110
+// #define TWAI_HEARTBEAT_ID       0x110
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
@@ -98,16 +98,8 @@ static void periodic_send_task(void *arg)
     twai_listener_ctx_t *ctx = arg;
 
     for (;;) {
-        uint64_t timestamp = esp_timer_get_time();
-        twai_frame_t tx_frame = {
-            .header.id = TWAI_HEARTBEAT_ID,
-            .buffer = (uint8_t *) &timestamp,
-            .buffer_len = sizeof(timestamp),
-        };
-        ESP_ERROR_CHECK(twai_node_transmit(ctx->node_hdl, &tx_frame, 500));
-        ESP_LOGI(TAG, "Sending heartbeat message: %lld", timestamp);
-        ESP_ERROR_CHECK(twai_node_transmit_wait_all_done(ctx->node_hdl, -1));
 
+        // insert can message send here
         xTaskDelayUntil(&last_wake, period);
     }
 }
