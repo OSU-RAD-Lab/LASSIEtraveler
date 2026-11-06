@@ -12,12 +12,12 @@
 #include "esp_twai.h"
 #include "esp_twai_onchip.h"
 
-#define TWAI_LISTENER_TX_GPIO   -1  // Listen only node doesn't need TX pin
-#define TWAI_LISTENER_RX_GPIO   CONFIG_EXAMPLE_TWAI_RX_GPIO
+#define TWAI_LISTENER_TX_GPIO   4  // Listen only node doesn't need TX pin
+#define TWAI_LISTENER_RX_GPIO   5
 #define TWAI_BITRATE            1000000
 
 // Message IDs (must match sender)
-#define TWAI_DATA_ID            0x100
+#define TWAI_DATA_ID            0x104
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
@@ -99,7 +99,8 @@ void app_main(void)
         },
         .bit_timing.bitrate = TWAI_BITRATE,
         .timestamp_resolution_hz = 1000000,
-        .flags.enable_listen_only = true,
+        .tx_queue_depth = 1,
+        .flags.enable_listen_only = false,
     };
 
     // Create TWAI node
@@ -108,9 +109,9 @@ void app_main(void)
 
     // Configure acceptance filter
     twai_mask_filter_config_t data_filter = {
-        .id = TWAI_DATA_ID,
-        .mask = 0x7F0,      // Match high 7 bits of the ID, ignore low 4 bits
-        .is_ext = false,    // Receive only standard ID
+        .id = 0,
+        .mask = 0,      // Match high 7 bits of the ID, ignore low 4 bits
+        .is_ext = true,    // Receive only extended ID
     };
     ESP_ERROR_CHECK(twai_node_config_mask_filter(twai_listener_ctx.node_hdl, 0, &data_filter));
     ESP_LOGI(TAG, "Filter enabled for ID: 0x%03X Mask: 0x%03X", data_filter.id, data_filter.mask);
