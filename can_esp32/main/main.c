@@ -133,8 +133,10 @@ void app_main(void)
     while (1) {
         if (xSemaphoreTake(twai_listener_ctx.rx_result_semaphore, portMAX_DELAY) == pdTRUE) {
             twai_frame_t *frame = &twai_listener_ctx.rx_pool[twai_listener_ctx.read_idx].frame;
-            ESP_LOGI(TAG, "RX: timestamp %llu, %x [%d] %x %x %x %x %x %x %x %x", \
-                     frame->header.timestamp, frame->header.id, frame->header.dlc, \
+            int device_id = frame->header.id & 0xFF;
+            int data_id = frame->header.id >> 8;
+            ESP_LOGI(TAG, "RX: timestamp %llu, %d [%d] %x %x %x %x %x %x %x %x", \
+                     frame->header.timestamp, device_id, data_id, \
                      frame->buffer[0], frame->buffer[1], frame->buffer[2], frame->buffer[3], \
                      frame->buffer[4], frame->buffer[5], frame->buffer[6], frame->buffer[7]);
             twai_listener_ctx.read_idx = (twai_listener_ctx.read_idx + 1) % POLL_DEPTH;
