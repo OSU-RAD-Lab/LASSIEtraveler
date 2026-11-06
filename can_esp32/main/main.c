@@ -17,8 +17,8 @@
 #define TWAI_BITRATE            1000000
 
 // Message IDs (must match sender)
-#define TWAI_DATA_ID            0x104
-#define TWAI_DATA_ID            0x104
+#define TWAI_DATA_ID            0x105
+#define TWAI_DATA_ID            0x105
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
