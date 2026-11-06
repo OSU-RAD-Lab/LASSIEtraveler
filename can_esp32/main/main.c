@@ -6,6 +6,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+#include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "esp_log.h"
@@ -17,8 +20,7 @@
 #define TWAI_BITRATE            1000000
 
 // Message IDs (must match sender)
-#define TWAI_DATA_ID            0x105
-#define TWAI_DATA_ID            0x105
+#define TWAI_DATA_ID            0x104
 
 // Buffer for burst data handling
 #define POLL_DEPTH              200
@@ -57,7 +59,7 @@ static bool IRAM_ATTR twai_listener_on_state_change_callback(twai_node_handle_t 
 // TWAI receive callback - store data and signal
 static bool IRAM_ATTR twai_listener_rx_callback(twai_node_handle_t handle, const twai_rx_done_event_data_t *edata, void *user_ctx)
 {
-    BaseType_t woken;
+    BaseType_t woken = pdFALSE;
     twai_listener_ctx_t *ctx = (twai_listener_ctx_t *)user_ctx;
 
     if (xSemaphoreTakeFromISR(ctx->free_pool_semaphore, &woken) != pdTRUE) {
@@ -66,9 +68,38 @@ static bool IRAM_ATTR twai_listener_rx_callback(twai_node_handle_t handle, const
     }
     if (twai_node_receive_from_isr(handle, &ctx->rx_pool[ctx->write_idx].frame) == ESP_OK) {
         ctx->write_idx = (ctx->write_idx + 1) % POLL_DEPTH;
-        xSemaphoreGiveFromISR(ctx->rx_result_semaphore, &woken);
+        xSemaphoreGiveFromISR(ctx->free_pool_semaphore, &woken);
     }
     return (woken == pdTRUE);
+}
+
+// Transmission completion callback
+static IRAM_ATTR bool twai_sender_tx_done_callback(twai_node_handle_t handle, const twai_tx_done_event_data_t *edata, void *user_ctx)
+{
+    if (!edata->is_tx_success) {
+        ESP_EARLY_LOGW(TAG, "Failed to transmit message, ID: 0x%X", edata->done_tx_frame->header.id);
+    }
+    return false; // No task wake required
+}
+
+// Bus error callback
+static IRAM_ATTR bool twai_sender_on_error_callback(twai_node_handle_t handle, const twai_error_event_data_t *edata, void *user_ctx)
+{
+    ESP_EARLY_LOGW(TAG, "TWAI node error: 0x%x", edata->err_flags.val);
+    return false; // No task wake required
+}
+
+static void periodic_send_task(void *arg)
+{
+    const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
+    TickType_t last_wake = xTaskGetTickCount();
+
+    for (;;) {
+        // Send your CAN message here.
+        // Keep its frame/payload valid until TX completes.
+
+        xTaskDelayUntil(&last_wake, period);
+    }
 }
 
 void app_main(void)
@@ -127,7 +158,16 @@ void app_main(void)
 
     // Enable TWAI node
     ESP_ERROR_CHECK(twai_node_enable(twai_listener_ctx.node_hdl));
-    ESP_LOGI(TAG, "TWAI start listening...");
+    BaseType_t result = xTaskCreate(
+        periodic_send_task,
+        "can_send",
+        4096,       // ESP-IDF stack size in bytes
+        NULL,       // Task argument
+        5,          // Priority
+        NULL
+    );
+    configASSERT(result == pdPASS);
+    ESP_LOGI(TAG, "TWAI started listening, and periodic sender created...");
 
     // Main loop - process all buffered data when signaled
     while (1) {
@@ -142,6 +182,7 @@ void app_main(void)
             twai_listener_ctx.read_idx = (twai_listener_ctx.read_idx + 1) % POLL_DEPTH;
             xSemaphoreGive(twai_listener_ctx.free_pool_semaphore);
         }
+
     }
 
     // Cleanup
