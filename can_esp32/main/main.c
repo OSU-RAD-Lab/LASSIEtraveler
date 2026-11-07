@@ -16,7 +16,7 @@
 #include "esp_timer.h"
 #include "esp_twai_onchip.h"
 
-#define TWAI_LISTENER_TX_GPIO   4  // Listen only node doesn't need TX pin
+#define TWAI_LISTENER_TX_GPIO   4
 #define TWAI_LISTENER_RX_GPIO   5
 #define TWAI_BITRATE            1000000
 
@@ -100,6 +100,7 @@ static void periodic_send_task(void *arg)
     for (;;) {
 
         // insert can message send here
+        twai_node_transmit(twai_listener_ctx.node_hdl, &frame, int timeout_ms);
         xTaskDelayUntil(&last_wake, period);
     }
 }
