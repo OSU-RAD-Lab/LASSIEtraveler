@@ -91,19 +91,41 @@ static IRAM_ATTR bool twai_sender_on_error_callback(twai_node_handle_t handle, c
     return false; // No task wake required
 }
 
-static void periodic_send_task(void *arg)
-{
-    const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
-    TickType_t last_wake = xTaskGetTickCount();
-    twai_listener_ctx_t *ctx = arg;
+// static void periodic_send_task(void *arg)
+// {
+//     const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
+//     TickType_t last_wake = xTaskGetTickCount();
+//     twai_listener_ctx_t *ctx = arg;
 
-    for (;;) {
+//     for (;;) {
 
-        // insert can message send here
-        twai_node_transmit(twai_listener_ctx.node_hdl, &frame, int timeout_ms);
-        xTaskDelayUntil(&last_wake, period);
+//         // insert can message send here
+
+//     }
+//         xTaskDelayUntil(&last_wake, period);
+//     }
+// }
+static bool twai_tx_done_cb(twai_node_handle_t handle, const twai_tx_done_event_data_t *edata, void *user_ctx)
+    {
+        const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
+        TickType_t last_wake = xTaskGetTickCount();
+        twai_listener_ctx_t *ctx = user_ctx;
+
+        // A frame has been successfully transmitted. Queue another one.
+        // The frame and its data buffer must be valid until transmission is complete.
+        static const uint8_t data_buffer[] = {1, 2, 3, 4};
+        static const twai_frame_t tx_frame = {
+        .header.id = 0x2,
+        .buffer = (uint8_t *)data_buffer,
+        .buffer_len = sizeof(data_buffer),
+        .header.ide = 0, // Standard ID
+        };
+
+        // The `twai_node_transmit` is safe to be called in an ISR context
+        twai_node_transmit(handle, &tx_frame, 0);
+        return false;
+
     }
-}
 
 void app_main(void)
 {
