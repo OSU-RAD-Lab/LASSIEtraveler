@@ -103,7 +103,7 @@ static void periodic_send_task(void *arg)
          // insert can message send here
             uint8_t data_buffer_1[] = {0x00, 0x5B, 0x8D, 80};
             twai_frame_t tx_frame_1 = {
-            .header.id = 0x468,
+            .header.ide = 0x468,
             .buffer = (uint8_t *)data_buffer_1,
             .buffer_len = sizeof(data_buffer_1),
             .header.ide = 0, // Standard ID
@@ -119,7 +119,7 @@ static void periodic_send_task(void *arg)
             // insert can message send here
             uint8_t data_buffer_2[] = {0xFF, 0xA4, 0x72, 80};
             twai_frame_t tx_frame_2 = {
-            .header.id = 0x468,
+            .header.ide = 0x468,
             .buffer = (uint8_t *)data_buffer_2,
             .buffer_len = sizeof(data_buffer_2),
             .header.ide = 0, // Standard ID
