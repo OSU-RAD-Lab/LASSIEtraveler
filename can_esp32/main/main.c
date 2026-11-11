@@ -109,7 +109,7 @@ static void periodic_send_task(void *arg)
             .header.id = 0x468,
             .buffer = (uint8_t *)data_buffer_1,
             .buffer_len = sizeof(data_buffer_1),
-            .header.ide = 0, // Standard ID
+            .header.ide = 1, // Extended ID
             };
 
             int64_t tx_timestamp_1 = esp_timer_get_time();
@@ -125,7 +125,7 @@ static void periodic_send_task(void *arg)
             .header.id = 0x468,
             .buffer = (uint8_t *)data_buffer_2,
             .buffer_len = sizeof(data_buffer_2),
-            .header.ide = 0, // Standard ID
+            .header.ide = 1, // Extended ID
             };
 
             int64_t tx_timestamp_2 = esp_timer_get_time();
@@ -189,7 +189,7 @@ void app_main(void)
         .on_rx_done = twai_listener_rx_callback,
         .on_error = twai_listener_on_error_callback,
         .on_state_change = twai_listener_on_state_change_callback,
-        .on_tx_done = twai_listener_on_tx_done_callback,
+        .on_tx_done = twai_sender_on_tx_done_callback,
     };
     ESP_ERROR_CHECK(twai_node_register_event_callbacks(twai_listener_ctx.node_hdl, &callbacks, &twai_listener_ctx));
 
