@@ -70,14 +70,17 @@ static bool IRAM_ATTR twai_listener_rx_callback(twai_node_handle_t handle, const
     }
     if (twai_node_receive_from_isr(handle, &ctx->rx_pool[ctx->write_idx].frame) == ESP_OK) {
         ctx->write_idx = (ctx->write_idx + 1) % POLL_DEPTH;
-        xSemaphoreGiveFromISR(ctx->free_pool_semaphore, &woken);
+        xSemaphoreGiveFromISR(ctx->rx_result_semaphore, &woken);
     }
     return (woken == pdTRUE);
 }
 
 // Transmission completion callback
 static IRAM_ATTR bool twai_sender_tx_done_callback(twai_node_handle_t handle, const twai_tx_done_event_data_t *edata, void *user_ctx)
-{
+{   
+    ESP_EARLY_LOGI(TAG, "TX done ID=0x%lX success=%d",
+               (unsigned long)edata->done_tx_frame->header.id,
+               edata->is_tx_success);
     if (!edata->is_tx_success) {
         ESP_EARLY_LOGW(TAG, "Failed to transmit message, ID: 0x%X", edata->done_tx_frame->header.id);
     }
@@ -186,6 +189,7 @@ void app_main(void)
         .on_rx_done = twai_listener_rx_callback,
         .on_error = twai_listener_on_error_callback,
         .on_state_change = twai_listener_on_state_change_callback,
+        .on_tx_done = twai_listener_on_tx_done_callback,
     };
     ESP_ERROR_CHECK(twai_node_register_event_callbacks(twai_listener_ctx.node_hdl, &callbacks, &twai_listener_ctx));
 
