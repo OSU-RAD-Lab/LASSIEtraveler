@@ -103,7 +103,7 @@ static void periodic_send_task(void *arg)
          // insert can message send here
             uint8_t data_buffer_1[] = {0x00, 0x5B, 0x8D, 80};
             twai_frame_t tx_frame_1 = {
-            .header.ide = 0x468,
+            .header.id = 0x468,
             .buffer = (uint8_t *)data_buffer_1,
             .buffer_len = sizeof(data_buffer_1),
             .header.ide = 0, // Standard ID
@@ -119,7 +119,7 @@ static void periodic_send_task(void *arg)
             // insert can message send here
             uint8_t data_buffer_2[] = {0xFF, 0xA4, 0x72, 80};
             twai_frame_t tx_frame_2 = {
-            .header.ide = 0x468,
+            .header.id = 0x468,
             .buffer = (uint8_t *)data_buffer_2,
             .buffer_len = sizeof(data_buffer_2),
             .header.ide = 0, // Standard ID
@@ -134,51 +134,6 @@ static void periodic_send_task(void *arg)
     }
         
 }
-
-// static bool twai_tx_done_cb(twai_node_handle_t handle, const twai_tx_done_event_data_t *edata, void *user_ctx)
-//     {
-//         const TickType_t period = pdMS_TO_TICKS(20); // 50 Hz
-//         TickType_t last_wake = xTaskGetTickCount();
-//         twai_listener_ctx_t *ctx = user_ctx;
-
-//         vTaskDelay(pdMS_TO_TICKS(5000));
-
-//          // insert can message send here
-//             uint8_t data_buffer_1[] = {0x00, 0x5B, 0x8D, 80};
-//             twai_frame_t tx_frame_1 = {
-//             .header.id = 0x468,
-//             .buffer = (uint8_t *)data_buffer_1,
-//             .buffer_len = sizeof(data_buffer_1),
-//             .header.ide = 0, // Standard ID
-//             };
-
-
-//             int64_t tx_timestamp_1 = esp_timer_get_time();
-//             ESP_LOGI(TAG, "TX timestamp_1: %lld us", tx_timestamp_1);
-
-//             ESP_ERROR_CHECK(twai_node_transmit(ctx->node_hdl, &tx_frame_1, 0));
-
-        
-//             vTaskDelay(pdMS_TO_TICKS(5000));
-
-//             // insert can message send here
-//             uint8_t data_buffer_2[] = {0xFF, 0xA4, 0x72, 80};
-//             twai_frame_t tx_frame_2 = {
-//             .header.id = 0x468,
-//             .buffer = (uint8_t *)data_buffer_2,
-//             .buffer_len = sizeof(data_buffer_2),
-//             .header.ide = 0, // Standard ID
-//             };
-
-
-//             int64_t tx_timestamp_2 = esp_timer_get_time();
-//             ESP_LOGI(TAG, "TX timestamp_2: %lld us", tx_timestamp_2);
-
-//             ESP_ERROR_CHECK(twai_node_transmit(ctx->node_hdl, &tx_frame_2, 0));
-
-//         return false;
-
-//     }
 
 void app_main(void)
 {
