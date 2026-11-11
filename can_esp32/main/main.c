@@ -189,7 +189,7 @@ void app_main(void)
         .on_rx_done = twai_listener_rx_callback,
         .on_error = twai_listener_on_error_callback,
         .on_state_change = twai_listener_on_state_change_callback,
-        .on_tx_done = twai_sender_on_tx_done_callback,
+        .on_tx_done = twai_sender_tx_done_callback,
     };
     ESP_ERROR_CHECK(twai_node_register_event_callbacks(twai_listener_ctx.node_hdl, &callbacks, &twai_listener_ctx));
 
