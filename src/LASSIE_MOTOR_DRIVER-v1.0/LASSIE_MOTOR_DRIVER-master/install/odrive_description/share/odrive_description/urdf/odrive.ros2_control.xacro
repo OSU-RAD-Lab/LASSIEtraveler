@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="odrive_ros2_control" params="name enable_joint0:=^|true enable_joint1:=^|true">
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <plugin>odrive_hardware_interface/ODriveHardwareInterface</plugin>
+      </hardware>
+
+      <xacro:if value="${enable_joint0}">
+        <joint name="joint0">
+          <param name="serial_number">000000000000</param>
+          <param name="axis">0</param>
+          <param name="enable_watchdog">0</param>
+          <param name="watchdog_timeout">10</param>
+        </joint>
+      </xacro:if>
+
+      <xacro:if value="${enable_joint1}">
+        <joint name="joint1">
+          <param name="serial_number">000000000000</param>
+          <param name="axis">1</param>
+          <param name="enable_watchdog">0</param>
+          <param name="watchdog_timeout">10</param>
+        </joint>
+      </xacro:if>
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>

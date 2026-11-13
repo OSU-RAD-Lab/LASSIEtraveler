@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/odrive_hardware_interface/include/odrive_hardware_interface/odrive_endpoints.hpp
+
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/odrive_hardware_interface/include/odrive_hardware_interface/odrive_usb.hpp
+iostream
+-
+cstring
+-
+map
+-
+vector
+-
+libusb-1.0/libusb.h
+-
+odrive_hardware_interface/odrive_endpoints.hpp
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/odrive_hardware_interface/include/odrive_hardware_interface/odrive_hardware_interface/odrive_endpoints.hpp
+
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/odrive_hardware_interface/src/odrive_usb.cpp
+odrive_hardware_interface/odrive_usb.hpp
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/odrive_hardware_interface/src/odrive_hardware_interface/odrive_usb.hpp
+
