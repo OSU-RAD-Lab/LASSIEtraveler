@@ -1,0 +1,17 @@
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/urdf/odrive.urdf.xacro
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/urdf/odrive.ros2_control.xacro
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/ament_index/resource_index/package_run_dependencies/odrive_description
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/ament_index/resource_index/parent_prefix_path/odrive_description
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/environment/ament_prefix_path.sh
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/environment/ament_prefix_path.dsv
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/environment/path.sh
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/environment/path.dsv
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/local_setup.bash
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/local_setup.sh
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/local_setup.zsh
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/local_setup.dsv
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/package.dsv
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/ament_index/resource_index/packages/odrive_description
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/cmake/odrive_descriptionConfig.cmake
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/cmake/odrive_descriptionConfig-version.cmake
+/home/tendi/lassie_traveler/src/LASSIE_MOTOR_DRIVER-v1.0/LASSIE_MOTOR_DRIVER-master/install/odrive_description/share/odrive_description/package.xml

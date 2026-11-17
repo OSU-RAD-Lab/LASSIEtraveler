@@ -1,0 +1,6 @@
+*.csv
+.vscode/
+LASSIS_GUI/__pychache__/
+experiment_video/
+experiment_data/
+!
